@@ -6,10 +6,10 @@
 
 
 #let authors_list = (
-  ([Riku], [Design Lead], ""), 
-  ([Nathan], [Design Lead], ""), 
-  ([Piper], [Design Lead], ""), 
-  ([Kylen], [Design Lead], ""),
+  ([Riku], [Project Lead / Designer], ""), 
+  ([Nathan], [Programmer], ""), 
+  ([Piper], [Programmer], ""), 
+  ([Kylen], [Programmer], ""),
 )
 
 #show: amcis.with(
@@ -41,7 +41,7 @@
 
 == #sym.section 1.1 Hook
 
-The player explores a dungeon and looks for treasure. Escape the dungeon to buy items and explore further.
+A Metroidvania style game where the player explores a dungeon and looks for treasure. Escape the dungeon to buy items and explore further.
 
 == #sym.section 1.2 Design Pillars
 
@@ -59,7 +59,10 @@ The player explores a dungeon and looks for treasure. Escape the dungeon to buy 
 
 #mermaid("
 flowchart LR
-    A[Explore\n~60 s] --> B[Fight\n5–15 s] --> C[Salvage\n~10 s] --> D[Upgrade\n~30 s] --> A
+    A[Explore\n~60 s] --> 
+    B[Fight\n5–15 s] --> 
+    C[Salvage\n~10 s] --> 
+    D[Upgrade\n~30 s] --> A
 ")
 
 == #sym.section 1.4 Audience & Genre
