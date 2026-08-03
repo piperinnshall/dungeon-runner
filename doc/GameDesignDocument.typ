@@ -39,7 +39,7 @@
 
 == Changelog
 
-The latest changes are tracked in the #link("CHANGELOG.md")[changelog].
+The latest changes are tracked in the #link("../CHANGELOG.md")[changelog].
 
 = #sym.section 1 Core
 
