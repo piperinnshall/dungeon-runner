@@ -37,6 +37,10 @@
 
 #show: booktabs-default-table-style
 
+== Changelog
+
+The latest changes are tracked in the #link("CHANGELOG.md")[changelog].
+
 = #sym.section 1 Core
 
 == #sym.section 1.1 Hook
@@ -85,10 +89,3 @@ flowchart LR
   [...], [Could], [...], [...], [Not started],
   bottomrule(),
 )
-
-#pagebreak()
-
-= Changelog
-
-#include "Changelog.typ"
-
