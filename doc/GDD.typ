@@ -37,10 +37,6 @@
 
 #show: booktabs-default-table-style
 
-== Changelog
-
-The latest changes are tracked in the #link("https://github.com/piperinnshall/dungeon-runner/blob/main/CHANGELOG.md")[changelog].
-
 = #sym.section 1 Core
 
 == #sym.section 1.1 Hook
@@ -68,13 +64,26 @@ flowchart LR
 
 == #sym.section 1.4 Audience & Genre
 
+Adventure dungeon crawler for people who play Zelda.
+
 == #sym.section 1.5 Look, Feel, & Tone
+
+Visual style for the game will be comic inspired, where player and non player
+characters will be cell shaded with a near black outline that follows the geometry.
+The level will have a low poly visual style somewhat similar to games on the switch/PS2.
+
+Think: HellBoy comics meets BOTW.
 
 == #sym.section 1.5 Goals & Non-Goals
 
 === Non-Goals
 
-- No ...
+- No multiplayer.
+- No buffs (consumables & items).
+- No difficulty sliders.
+- No multi-platform ports.
+- No crafting.
+- No swimming (death).
 
 === MoSCoW
 
@@ -89,3 +98,9 @@ flowchart LR
   [...], [Could], [...], [...], [Not started],
   bottomrule(),
 )
+
+#pagebreak()
+
+== Changelog
+
+The latest changes are tracked in the #link("https://github.com/piperinnshall/dungeon-runner/blob/main/CHANGELOG.md")[changelog].
