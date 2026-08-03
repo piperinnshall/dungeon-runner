@@ -41,7 +41,7 @@
 
 == #sym.section 1.1 Hook
 
-For [audience] who want [experience], [title] is a [genre] where [the one thing no other game does].
+The player explores a dungeon and looks for treasure. Escape the dungeon to buy items and explore further.
 
 == #sym.section 1.2 Design Pillars
 
