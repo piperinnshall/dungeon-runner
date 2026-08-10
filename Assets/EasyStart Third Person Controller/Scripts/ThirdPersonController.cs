@@ -1,4 +1,4 @@
-﻿
+
 using UnityEditor.VersionControl;
 using UnityEngine;
 
@@ -34,6 +34,7 @@ public class ThirdPersonController : MonoBehaviour
     bool isJumping = false;
     bool isSprinting = false;
     bool isCrouching = false;
+    bool isPickingUp = false;
 
     // Inputs
     float inputHorizontal;
@@ -41,6 +42,7 @@ public class ThirdPersonController : MonoBehaviour
     bool inputJump;
     bool inputCrouch;
     bool inputSprint;
+    bool inputPickUp;
 
     Animator animator;
     CharacterController cc;
@@ -66,6 +68,7 @@ public class ThirdPersonController : MonoBehaviour
         inputVertical = Input.GetAxis("Vertical");
         inputJump = Input.GetAxis("Jump") == 1f;
         inputSprint = Input.GetAxis("Fire3") == 1f;
+        inputPickUp = Input.GetKeyDown(KeyCode.E);
         // Unfortunately GetAxis does not work with GetKeyDown, so inputs must be taken individually
         inputCrouch = Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.JoystickButton1);
 
@@ -103,6 +106,11 @@ public class ThirdPersonController : MonoBehaviour
             // Disable crounching when jumping
             //isCrouching = false; 
         }
+
+        // Pick up animation
+        //if( inputPickUp )
+
+
 
         HeadHittingDetect();
 
