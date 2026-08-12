@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/UI/MainMenu.unity
     guid: dfe23fdadb6dc45a28ceb7c4e4a0dc15
   - enabled: 1
-    path: Assets/Scenes/SampleScene.unity
-    guid: 99c9720ab356a0642a771bea13969a05
+    path: Assets/Scenes/PrototypeLevel/GreyboxLevel.unity
+    guid: e97827c2289be4d49b001c0a5b75c819
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
