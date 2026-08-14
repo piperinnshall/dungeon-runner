@@ -32,4 +32,18 @@ public class Inventory : MonoBehaviour
         }
         return count;
     }
+
+    public void DisplayInventory()
+    {
+        Debug.Log("Inventory contains: " + string.Join(", ", items));
+        // Insert UI here
+    }
+
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.I))
+        {
+            DisplayInventory();
+        }
+    }
 }
