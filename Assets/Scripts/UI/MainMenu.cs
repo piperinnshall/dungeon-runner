@@ -2,11 +2,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour {
-  public void Play() {
-    new World().Start();
-  }
-
-  public void Quit() {
-    Application.Quit();
-  }
+  private World _world;
+  public void Awake() { _world = new World(); }
+  public void Play() { _world.Start(); }
+  public void Quit() { Application.Quit(); }
 }
