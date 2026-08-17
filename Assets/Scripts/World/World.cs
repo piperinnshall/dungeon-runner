@@ -8,8 +8,7 @@ public class World {
 }
 
 public class GameManager {
-  private States _state = new States.Menu();
-  public States State => _state;
+  public States State { get; private set; } = new States.Menu();
 
   public abstract record States {
     public sealed record Menu() : States;
@@ -25,20 +24,26 @@ public class GameManager {
     };
   }
 
-  public void Transition(States to) => _state = Transition(_state, to);
+  public void Transition(States to) => State = Transition(State, to);
 
   private States Transition(States state, States to) => (state, to) switch {
-    (States.Menu, States.Loading) => LoadWorld(to),
+    (States.Menu, States.Loading) => Loading(to),
     (States.Loading, States.Playing) => to,
     (States.Playing, States.Dead) => to,
     (States.Dead, States.Loading) => to,
     _ => throw new InvalidOperationException("Invalid transition")
   };
 
-  private States LoadWorld(States state) {
-    SceneManager.sceneLoaded += (scene, mode) => Transition(new States.Playing());
+  private States Loading(States to) {
+    SceneManager.sceneLoaded += OnWorldLoaded;
     SceneManager.LoadSceneAsync("SampleScene");
-    return state;
+    return to;
+  }
+
+  private void OnWorldLoaded(Scene scene, LoadSceneMode mode) {
+      SceneManager.sceneLoaded -= OnWorldLoaded;
+      Transition(new States.Playing());
   }
 }
+
 
