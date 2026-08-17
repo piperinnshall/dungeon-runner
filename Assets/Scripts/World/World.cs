@@ -46,4 +46,15 @@ public class GameManager {
   }
 }
 
+public class TreasureManager {
+  private List<CoinPacket> _packets = new();
+}
 
+public record CoinPacket(int Amount, ITreasureSource SourceChest) {
+  public void ReturnHome() => SourceChest.ReceivePacket(this);
+}
+
+public interface ITreasureSource {
+  // TODO: Implement with actual Treasure class
+  void ReceivePacket(CoinPacket packet);
+}
