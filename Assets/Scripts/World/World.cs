@@ -1,49 +1,24 @@
-using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class World {
-    public GameManager Game { get; private set; } = new GameManager();
-    public TreasureManager Treasure { get; private set; } = new TreasureManager();
+  public GameManager Game { get; private set; } = new GameManager();
+  public TreasureManager Treasure { get; private set; } = new TreasureManager();
 
-    public void Start() => Game.Transition(new GameManager.IState.Loading());
-
-    /*
-     * var treasures = FindObjectsOfType<ITreasure>();
-     * foreach (var treasure in treasures) {
-     *   treasure.Initialize(world.Treasure)
-     * }
-     */
+  public void Start() {
+    Game.Transition(new GameManager.IState.Loading());
+    var treasure = new StubTreasure();
+    Treasure.Add(ICoinPacket.CreateCheap(treasure));
+    Treasure.Add(ICoinPacket.CreateSacred(treasure));
+    Debug.Log($"Total Coins: {Treasure.GetTotalCoins()}");
+    Treasure.Clear();
+    Debug.Log($"Total Coins: {Treasure.GetTotalCoins()}");
+    Debug.Log(treasure.Treasure);
+  }
 }
 
-public class GameManager {
-    public IState State { get; private set; } = new IState.Menu();
-
-    public interface IState {
-        public sealed record Menu : IState;
-        public sealed record Loading : IState;
-        public sealed record Playing : IState;
-        public sealed record Dead : IState;
-    }
-
-    public void Transition(IState to) => State = Transition(State, to);
-
-    private IState Transition(IState state, IState to) => (state, to) switch {
-        (IState.Menu, IState.Loading) => Loading(to),
-        (IState.Loading, IState.Playing) => to,
-        (IState.Playing, IState.Dead) => to,
-        (IState.Dead, IState.Loading) => to,
-        _ => throw new InvalidOperationException("Invalid transition")
-    };
-
-    private IState Loading(IState to) {
-        SceneManager.sceneLoaded += OnWorldLoaded;
-        SceneManager.LoadSceneAsync("SampleScene");
-        return to;
-    }
-
-    private void OnWorldLoaded(Scene scene, LoadSceneMode mode) {
-        SceneManager.sceneLoaded -= OnWorldLoaded;
-        Transition(new IState.Playing());
-    }
-}
+/*
+ * var treasures = FindObjectsOfType<ITreasure>();
+ * foreach (var treasure in treasures) {
+ *   treasure.Initialize(world.Treasure)
+ * }
+ */
