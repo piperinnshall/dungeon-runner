@@ -3,58 +3,39 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class World {
-  private GameManager _game = new GameManager();
-  public void Start() { _game.Transition(new GameManager.States.Loading()); }
+    private GameManager _game = new GameManager();
+
+    public void Start() => _game.Transition(new GameManager.IState.Loading());
 }
 
 public class GameManager {
-  public States State { get; private set; } = new States.Menu();
+    public IState State { get; private set; } = new IState.Menu();
 
-  public abstract record States {
-    public sealed record Menu() : States;
-    public sealed record Loading() : States;
-    public sealed record Playing() : States;
-    public sealed record Dead() : States;
-    public override string ToString() => this switch {
-      Menu => "Menu",
-      Loading => "Loading",
-      Playing => "Playing",
-      Dead => "Dead",
-      _ => throw new InvalidOperationException()
+    public interface IState {
+        public sealed record Menu : IState;
+        public sealed record Loading : IState;
+        public sealed record Playing : IState;
+        public sealed record Dead : IState;
+    }
+
+    public void Transition(IState to) => State = Transition(State, to);
+
+    private IState Transition(IState state, IState to) => (state, to) switch {
+        (IState.Menu, IState.Loading) => Loading(to),
+        (IState.Loading, IState.Playing) => to,
+        (IState.Playing, IState.Dead) => to,
+        (IState.Dead, IState.Loading) => to,
+        _ => throw new InvalidOperationException("Invalid transition")
     };
-  }
 
-  public void Transition(States to) => State = Transition(State, to);
+    private IState Loading(IState to) {
+        SceneManager.sceneLoaded += OnWorldLoaded;
+        SceneManager.LoadSceneAsync("SampleScene");
+        return to;
+    }
 
-  private States Transition(States state, States to) => (state, to) switch {
-    (States.Menu, States.Loading) => Loading(to),
-    (States.Loading, States.Playing) => to,
-    (States.Playing, States.Dead) => to,
-    (States.Dead, States.Loading) => to,
-    _ => throw new InvalidOperationException("Invalid transition")
-  };
-
-  private States Loading(States to) {
-    SceneManager.sceneLoaded += OnWorldLoaded;
-    SceneManager.LoadSceneAsync("SampleScene");
-    return to;
-  }
-
-  private void OnWorldLoaded(Scene scene, LoadSceneMode mode) {
-      SceneManager.sceneLoaded -= OnWorldLoaded;
-      Transition(new States.Playing());
-  }
-}
-
-public class TreasureManager {
-  private List<CoinPacket> _packets = new();
-}
-
-public record CoinPacket(int Amount, ITreasureSource SourceChest) {
-  public void ReturnHome() => SourceChest.ReceivePacket(this);
-}
-
-public interface ITreasureSource {
-  // TODO: Implement with actual Treasure class
-  void ReceivePacket(CoinPacket packet);
+    private void OnWorldLoaded(Scene scene, LoadSceneMode mode) {
+        SceneManager.sceneLoaded -= OnWorldLoaded;
+        Transition(new IState.Playing());
+    }
 }
