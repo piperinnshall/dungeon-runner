@@ -3,9 +3,17 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class World {
-    private GameManager _game = new GameManager();
+    public GameManager Game { get; private set; } = new GameManager();
+    public TreasureManager Treasure { get; private set; } = new TreasureManager();
 
-    public void Start() => _game.Transition(new GameManager.IState.Loading());
+    public void Start() => Game.Transition(new GameManager.IState.Loading());
+
+    /*
+     * var treasures = FindObjectsOfType<ITreasure>();
+     * foreach (var treasure in treasures) {
+     *   treasure.Initialize(world.Treasure)
+     * }
+     */
 }
 
 public class GameManager {
