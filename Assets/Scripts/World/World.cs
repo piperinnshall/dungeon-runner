@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class World {
@@ -5,15 +7,22 @@ public class World {
   public TreasureManager Treasure { get; private set; } = new TreasureManager();
 
   public void Start() {
-    Game.Transition(new GameManager.IState.Loading());
-    var treasure = new StubTreasure();
-    Treasure.Add(ICoinPacket.CreateCheap(treasure));
-    Treasure.Add(ICoinPacket.CreateSacred(treasure));
-    Debug.Log($"Total Coins: {Treasure.GetTotalCoins()}");
-    Treasure.Clear();
-    Debug.Log($"Total Coins: {Treasure.GetTotalCoins()}");
-    Debug.Log(treasure.Treasure);
+    Game.Transition(new IState.Loading());
+    TestTreasures();
   }
+
+  private void TestTreasures() {
+    var treasures = new List<ITreasure> {
+      new StubTreasure<ICoinPacket.Cheap>(),
+      new StubTreasure<ICoinPacket.Sacred>(),
+      new StubTreasure<ICoinPacket.Valuable>(),
+    };
+    treasures.ForEach(treasure => treasure.Initialize(Treasure));
+    Debug.Log($"First Treasure: {string.Join(", ", treasures.First().Packets)}");
+    
+    treasures.First().Open();
+  }
+
 }
 
 /*

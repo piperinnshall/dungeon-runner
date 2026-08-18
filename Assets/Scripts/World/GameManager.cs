@@ -3,16 +3,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager {
-  public IState State { get; private set; } = new IState.Menu();
+  private IState _state = new IState.Menu();
 
-  public interface IState {
-    public sealed record Menu : IState;
-    public sealed record Loading : IState;
-    public sealed record Playing : IState;
-    public sealed record Dead : IState;
-  }
-
-  public void Transition(IState to) => State = Transition(State, to);
+  public void Transition(IState to) => _state = Transition(_state, to);
 
   private IState Transition(IState state, IState to) => (state, to) switch {
     (IState.Menu, IState.Loading) => Loading(to),
@@ -33,3 +26,11 @@ public class GameManager {
     Transition(new IState.Playing());
   }
 }
+
+public interface IState {
+  public sealed record Menu : IState;
+  public sealed record Loading : IState;
+  public sealed record Playing : IState;
+  public sealed record Dead : IState;
+}
+
