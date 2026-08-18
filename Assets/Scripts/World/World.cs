@@ -17,12 +17,18 @@ public class World {
       new StubTreasure<ICoinPacket.Sacred>(),
       new StubTreasure<ICoinPacket.Valuable>(),
     };
-    treasures.ForEach(treasure => treasure.Initialize(Treasure));
-    Debug.Log($"First Treasure: {string.Join(", ", treasures.First().Packets)}");
-    
-    treasures.First().Open();
+    treasures.ForEach(t => {
+        t.Initialize(Treasure);
+        Debug.Log($"Treasure: {string.Join(", ", t.Packets)}");
+    });
+    treasures[0].Open();
+    treasures[1].Open();
+    Debug.Log($"Opened Treasures. Manager Coins: {Treasure.GetTotalCoins()}");
+    Debug.Log("Player Died");
+    Treasure.OnPlayerDeath(treasures);
+    treasures.ForEach(t => Debug.Log($"Treasure: {string.Join(", ", t.Packets)} (IsOpened: {t.IsOpened})"));
+    Debug.Log($"Manager Coins: {Treasure.GetTotalCoins()}");
   }
-
 }
 
 /*

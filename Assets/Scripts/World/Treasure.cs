@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,7 +19,8 @@ public class StubTreasure<T> : ITreasure where T : ICoinPacket {
   public StubTreasure() => _packets.Add(ICoinPacket.Create<T>());
 
   public void Open() {
-    if (IsOpened || _manager == null) return;
+    if (IsOpened) return;
+    if (_manager == null) throw new InvalidOperationException("TreasureManager not initialized");
     IsOpened = true;
     _packets.ForEach(_manager.Add);
     _packets.Clear();
