@@ -4,12 +4,17 @@ using System.Linq;
 using UnityEngine;
 
 public class TreasureManager {
-  private List<ICoinPacket> Packets { get; } = new();
+  private List<ICoinPacket> _packets = new();
+  public int GetTotalCoins() => _packets.Sum(p => p.Amount);
+  public void Add(ICoinPacket packet) => _packets.Add(packet);
+  public void Remove(ICoinPacket packet) => _packets.Remove(packet);
 
-  public int GetTotalCoins() => Packets.Sum(p => p.Amount);
-  public void Add(ICoinPacket packet) => Packets.Add(packet);
-  public void Remove(ICoinPacket packet) => Packets.Remove(packet);
-  public void Clear() => Packets.Clear();
+  public void OnPlayerDeath(List<ITreasure> allTreasures) {
+    var closed = allTreasures.Where(t => !t.IsOpened).ToList();
+    if (closed.Count == 0) return;
+    foreach (var (p, i) in _packets.Enumerate()) closed[i % closed.Count].Add(p);
+    _packets.Clear();
+  }
 }
 
 public interface ICoinPacket {
@@ -18,6 +23,7 @@ public interface ICoinPacket {
   public sealed record Moderate(int Amount) : ICoinPacket;
   public sealed record Valuable(int Amount) : ICoinPacket;
   public sealed record Sacred(int Amount) : ICoinPacket;
+
   public static ICoinPacket Create<T>() where T : ICoinPacket {
     var amount = typeof(T).Name switch {
       nameof(Cheap) => UnityEngine.Random.Range(1, 6),
