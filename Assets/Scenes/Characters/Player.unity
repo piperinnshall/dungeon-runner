@@ -226,12 +226,12 @@ GameObject:
   - component: {fileID: 360647307}
   - component: {fileID: 360647306}
   - component: {fileID: 360647305}
-  - component: {fileID: 360647304}
   - component: {fileID: 360647308}
   - component: {fileID: 360647312}
   - component: {fileID: 360647313}
   - component: {fileID: 360647315}
   - component: {fileID: 360647314}
+  - component: {fileID: 360647316}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -239,23 +239,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &360647304
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 360647303}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4dbd62af2a25df34c9a8e8a7bcb2c370, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ThirdPersonController
-  velocity: 5
-  sprintAdittion: 3.5
-  jumpForce: 18
-  jumpTime: 0.85
-  gravity: 9.8
 --- !u!143 &360647305
 CharacterController:
   m_ObjectHideFlags: 0
@@ -493,6 +476,20 @@ MonoBehaviour:
   attackPoint: {fileID: 154335507}
   animator: {fileID: 0}
   playerCamera: {fileID: 222240921}
+--- !u!114 &360647316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 360647303}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6db2c72d860ea8145a55e9a2ec0a206a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Movement
+  jumpTime: 0.85
+  animator: {fileID: 0}
 --- !u!1 &767465159
 GameObject:
   m_ObjectHideFlags: 0
