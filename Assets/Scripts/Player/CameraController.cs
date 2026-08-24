@@ -1,4 +1,4 @@
-﻿
+
 using UnityEngine;
 
 /*
@@ -17,17 +17,24 @@ public class CameraController : MonoBehaviour
     [Tooltip("Enable to move the camera by holding the right mouse button. Does not work with joysticks.")]
     public bool clickToMoveCamera = false;
     [Tooltip("Enable zoom in/out when scrolling the mouse wheel. Does not work with joysticks.")]
-    public bool canZoom = true;
+    public bool canZoom = false;
     [Space]
     [Tooltip("The higher it is, the faster the camera moves. It is recommended to increase this value for games that uses joystick.")]
     public float sensitivity = 5f;
 
     [Tooltip("Camera Y rotation limits. The X axis is the maximum it can go up and the Y axis is the maximum it can go down.")]
-    public Vector2 cameraLimit = new Vector2(-45, 40);
+    public Vector2 cameraLimit = new Vector2(-60, 70);
 
     float mouseX;
     float mouseY;
     float offsetDistanceY;
+
+    [SerializeField] float collisionOffset = 0.2f; // Offset to prevent camera from clipping into objects
+    [SerializeField] LayerMask collisionMask; // Layer mask for objects that the camera can collide with
+
+    Camera playerCamera;
+    Transform cameraTransform;
+    Vector3 desiredLocalPosition;
 
     Transform player;
 
@@ -35,6 +42,13 @@ public class CameraController : MonoBehaviour
     {
 
         player = GameObject.FindWithTag("Player").transform;
+
+        playerCamera = GetComponentInChildren<Camera>();
+        cameraTransform = playerCamera.transform;
+
+        // Store the initial desired position of the camera
+        desiredLocalPosition = cameraTransform.localPosition;
+
         offsetDistanceY = transform.position.y;
 
         // Lock and hide cursor with option isn't checked
@@ -72,4 +86,29 @@ public class CameraController : MonoBehaviour
         transform.rotation = Quaternion.Euler(-mouseY, mouseX, 0);
 
     }
+
+    void HandleCameraCollision()
+    {
+        // Calculate the desired position of the camera based on its local position
+        Vector3 desiredPosition = transform.TransformPoint(desiredLocalPosition);
+        // Perform a raycast from the camera's position to the desired position
+        RaycastHit hit;
+        if (Physics.Linecast(transform.position, desiredPosition, out hit, collisionMask))
+        {
+            // If there's a collision, move the camera to the hit point minus an offset
+            cameraTransform.position = hit.point - transform.forward * collisionOffset;
+        }
+        else
+        {
+            // If there's no collision, move the camera to its desired position
+            cameraTransform.localPosition = desiredLocalPosition;
+        }
+    }
+
+    // LateUpdate is called AFTER all Update functions have been called.
+    void LateUpdate()
+    {
+        HandleCameraCollision();
+    }
+
 }

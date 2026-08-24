@@ -21,9 +21,10 @@ public class Movement : MonoBehaviour
     float gravity = 9.8f;
     float jumpForce = 18f;
     float jumpElapsedTime = 0;
-    public float jumpTime = 0.85f;
+    float jumpTime = 0.85f;
 
     public Animator animator;
+    public Transform playerCamera;
     CharacterController cc;
 
     public PlayerState currentState = new Idle();
