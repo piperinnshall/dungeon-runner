@@ -2,28 +2,36 @@ using UnityEngine;
 
 public class Skeleton_Behaviour : MonoBehaviour
 {
-    private Animator animator;
+    public enum EnemyState
+    {
+        Patrol,
+        Chase,
+        Attack
+    }
+
+    private EnemyState currentState = EnemyState.Patrol;
+
     private Transform player;
     private CharacterController controller;
+
     private Collider skeletonCollider;
     private Collider playerCollider;
 
-    public float speed = 2f;
-    public float rayDistance = 10f; // change if we need further view distance idk how far skeletons can see
-    public float viewAngle = 140f;
-    public float attackDistance = 0.5f;
+    public float patrolSpeed = 2f;
+    public float chaseSpeed = 3f;
 
-    private bool isWalking = false;
-    private bool isAttacking = false;
+    public float detectionRadius = 5f;
+    public float chaseRadius = 10f;
+    public float attackDistance = 1.5f;
 
-    private float attackStartTime;
-    private float attackLength;
+    public Transform patrolPointA;
+    public Transform patrolPointB;
+
+    private bool goingToPointA = true;
 
     void Start()
     {
-        animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
-
         skeletonCollider = GetComponentInChildren<Collider>();
 
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
@@ -35,199 +43,228 @@ public class Skeleton_Behaviour : MonoBehaviour
         }
         else
         {
-            Debug.LogError("Player with tag 'Player' was NOT found!");
+            Debug.LogError("Player with tag 'Player' was not found"); //assign the player tag to the player object if this shows up
+        }
+
+        if (patrolPointA == null)
+        {
+            Debug.LogError("Patrol Point A has not been assigned"); //assign these on in the inspector if this shows up
+        }
+
+        if (patrolPointB == null)
+        {
+            Debug.LogError("Patrol Point B has not been assigned");
         }
     }
 
     void Update()
     {
-        if (player == null || playerCollider == null)
+        switch (currentState)
+        {
+            case EnemyState.Patrol:
+                Patrol();
+                break;
+
+            case EnemyState.Chase:
+                Chase();
+                break;
+
+            case EnemyState.Attack:
+                Attack();
+                break;
+        }
+    }
+
+    void Patrol()
+    {
+        if (patrolPointA == null || patrolPointB == null)
         {
             return;
         }
 
-        // while attacking stay still and wait for animation to finish
-        if (isAttacking)
+        if (player != null)
         {
-            CheckAttackFinished();
-            return;
-        }
+            float distanceToPlayer = Vector3.Distance(
+                transform.position,
+                player.position
+            );
 
-        Vector3 direction = (player.position - transform.position).normalized;
-
-        //check 140 degree field of view
-        float angle = Vector3.Angle(transform.forward, direction);
-
-        if (angle > viewAngle / 2f)
-        {
-            StopWalking();
-            return;
-        }
-
-        RaycastHit[] hits = Physics.RaycastAll(transform.position, direction, rayDistance);
-
-        RaycastHit? playerHit = null;
-        float closestDistance = rayDistance;
-
-        foreach (RaycastHit hit in hits)
-        {
-            // ignore enemies
-            if (hit.collider.CompareTag("Enemy"))
+            //player is inside detection radius
+            if (distanceToPlayer <= detectionRadius)
             {
-                continue;
-            }
-
-            // ignore this skeleton. Will change when we have multiple skeletons
-            if (hit.collider.transform.root == transform.root)
-            {
-                continue;
-            }
-
-            if (hit.distance < closestDistance)
-            {
-                closestDistance = hit.distance;
-                playerHit = hit;
-            }
-        }
-
-        if (playerHit.HasValue)
-        {
-            RaycastHit hit = playerHit.Value;
-            Debug.DrawRay(transform.position, direction * hit.distance, Color.red);
-
-            if (hit.collider.transform.root.CompareTag("Player"))
-            {
-                float distance = GetColliderDistance();
-
-                if (distance <= attackDistance)
+                //only check line of sight while patrolling
+                if (HasLineOfSight())
                 {
-                    AttackPlayer();
-                }
-                else
-                {
-                    WalkTowardsPlayer();
+                    ChangeState(EnemyState.Chase);
+                    return;
                 }
             }
-            else
-            {
-                StopWalking();
-            }
+        }
+
+        Transform targetPoint;
+
+        if (goingToPointA)
+        {
+            targetPoint = patrolPointA;
         }
         else
         {
-            Debug.DrawRay(transform.position, direction * rayDistance, Color.yellow);
-            StopWalking();
+            targetPoint = patrolPointB;
+        }
+
+        Vector3 direction = targetPoint.position - transform.position;
+
+        direction.y = 0f;
+
+        if (direction.magnitude <= 0.5f)
+        {
+            goingToPointA = !goingToPointA;
+            return;
+        }
+
+        direction.Normalize();
+
+        transform.rotation = Quaternion.LookRotation(direction);
+
+        Vector3 movement = direction * patrolSpeed * Time.deltaTime;
+
+        if (controller != null)
+        {
+            controller.Move(movement);
+        }
+        else
+        {
+            transform.position += movement;
         }
     }
 
-    void WalkTowardsPlayer()
+    void Chase()
     {
-        if (isAttacking)
+        if (player == null)
+        {
+            ChangeState(EnemyState.Patrol);
+            return;
+        }
+
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        //player has left the chase radius
+        if (distanceToPlayer > chaseRadius)
+        {
+            ChangeState(EnemyState.Patrol);
+            return;
+        }
+
+        //player is close enough to attack
+        if (GetColliderDistance() <= attackDistance)
+        {
+            ChangeState(EnemyState.Attack);
+            return;
+        }
+
+        MoveTowards(player.position, chaseSpeed);
+    }
+
+    void Attack()
+    {
+        if (player == null)
+        {
+            ChangeState(EnemyState.Patrol);
+            return;
+        }
+
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        //player left chase radius
+        if (distanceToPlayer > chaseRadius)
+        {
+            ChangeState(EnemyState.Patrol);
+            return;
+        }
+
+        //player moved out of attack distance
+        if (GetColliderDistance() > attackDistance)
+        {
+            ChangeState(EnemyState.Chase);
+            return;
+        }
+
+        FacePlayer();
+    }
+
+    bool HasLineOfSight()
+    {
+        Vector3 direction = player.position - transform.position;
+
+        float distance = direction.magnitude;
+
+        direction.Normalize();
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, direction, out hit, distance))
+        {
+            Debug.DrawRay(transform.position, direction * hit.distance, Color.red);
+
+            //the first thing hit is the player
+            if (hit.collider.transform.root.CompareTag("Player"))
+            {
+                return true;
+            }
+
+            //something else is blocking the player
+            return false;
+        }
+
+        return false;
+    }
+
+    void MoveTowards(Vector3 targetPosition, float movementSpeed)
+    {
+        Vector3 direction = targetPosition - transform.position;
+
+        direction.y = 0f;
+
+        if (direction.magnitude <= 0.01f)
         {
             return;
         }
 
-        float distance = GetColliderDistance();
+        direction.Normalize();
 
-        if (distance <= attackDistance)
+        transform.rotation = Quaternion.LookRotation(direction);
+
+        Vector3 movement = direction * movementSpeed * Time.deltaTime;
+
+        if (controller != null)
         {
-            AttackPlayer();
-            return;
+            controller.Move(movement);
         }
-
-        Vector3 lookDirection = player.position - transform.position;
-
-        lookDirection.y = 0f;
-
-        if (lookDirection != Vector3.zero)
+        else
         {
-            transform.rotation = Quaternion.LookRotation(lookDirection);
-        }
-
-        float moveDistance = speed * Time.deltaTime;
-
-        float allowedDistance = distance - attackDistance;
-
-        if (moveDistance > allowedDistance)
-        {
-            moveDistance = allowedDistance;
-        }
-
-        if (moveDistance > 0f)
-        {
-            Vector3 movement =
-                transform.forward * moveDistance;
-
-            if (controller != null)
-            {
-                controller.Move(movement);
-            }
-            else
-            {
-                transform.position += movement;
-            }
-        }
-
-        if (!isWalking)
-        {
-            animator.Play("1HandedWalk");
-            isWalking = true;
+            transform.position += movement;
         }
     }
 
-    void AttackPlayer()
+    void FacePlayer()
     {
-        if (isAttacking)
+        Vector3 direction = player.position - transform.position;
+
+        direction.y = 0f;
+
+        if (direction.magnitude > 0.01f)
         {
-            return;
+            transform.rotation = Quaternion.LookRotation(direction);
         }
-
-        isWalking = false;
-        isAttacking = true;
-
-        animator.Play("1HandedAttack1", 0, 0f);
-
-        
-        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
-
-        attackLength = state.length;
-        attackStartTime = Time.time;
-    }
-
-    void CheckAttackFinished()
-    {
-        //wait til animation is done
-        if (Time.time - attackStartTime < attackLength)
-        {
-            return;
-        }
-
-        // attack finished
-        isAttacking = false;
-
-        //checks if player is still infront
-        Vector3 direction = (player.position - transform.position).normalized;
-
-        float angle = Vector3.Angle(transform.forward, direction);
-
-        if (angle <= viewAngle / 2f)
-        {
-            float distance = GetColliderDistance();
-
-            // Player is still close enough.
-            if (distance <= attackDistance)
-            {
-                AttackPlayer();
-                return;
-            }
-        }
-
-        // player out of view
-        StopWalking();
     }
 
     float GetColliderDistance()
     {
+        if (skeletonCollider == null || playerCollider == null)
+        {
+            return Vector3.Distance(transform.position, player.position);
+        }
+
         Vector3 skeletonPoint = skeletonCollider.ClosestPoint(playerCollider.transform.position);
 
         Vector3 playerPoint = playerCollider.ClosestPoint(skeletonPoint);
@@ -235,12 +272,24 @@ public class Skeleton_Behaviour : MonoBehaviour
         return Vector3.Distance(skeletonPoint, playerPoint);
     }
 
-    void StopWalking()
+    void ChangeState(EnemyState newState)
     {
-        if (!isAttacking)
+        if (currentState == newState)
         {
-            isWalking = false;
-            animator.Play("Idle1Handed");
+            return;
         }
+
+        currentState = newState;
+
+        Debug.Log(gameObject.name + " changed state to " + currentState);
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        // Detection radius
+        Gizmos.DrawWireSphere(transform.position, detectionRadius);
+
+        // Chase radius
+        Gizmos.DrawWireSphere(transform.position, chaseRadius);
     }
 }
