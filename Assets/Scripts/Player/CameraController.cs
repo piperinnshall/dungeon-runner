@@ -32,6 +32,10 @@ public class CameraController : MonoBehaviour
     [SerializeField] float collisionOffset = 0.2f; // Offset to prevent camera from clipping into objects
     [SerializeField] LayerMask collisionMask; // Layer mask for objects that the camera can collide with
 
+    [SerializeField] float defaultFOV = 60f; // Default field of view for the camera
+    [SerializeField] float topDownFOV = 80f; // Field of view when the camera is looking directly down
+    [SerializeField] float zoomSpeed = 10f; // Speed at which the camera zooms in and out
+
     Camera playerCamera;
     Transform cameraTransform;
     Vector3 desiredLocalPosition;
@@ -85,6 +89,8 @@ public class CameraController : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(-mouseY, mouseX, 0);
 
+        BirdEyeView();
+
     }
 
     void HandleCameraCollision()
@@ -103,6 +109,20 @@ public class CameraController : MonoBehaviour
             // If there's no collision, move the camera to its desired position
             cameraTransform.localPosition = desiredLocalPosition;
         }
+    }
+
+    // Zoom out when camera is looking directly down for a bird's eye view
+    void BirdEyeView()
+    {
+        // Calculate how much the camera is looking down
+        float lookingDownAmount = Vector3.Dot(transform.forward, Vector3.down);
+        bool isLookingDown = lookingDownAmount > 0.7f;
+
+        // If the camera is looking down, set the field of view to the top-down FOV, otherwise set it to the default FOV
+        float targetFOV = isLookingDown ? topDownFOV : defaultFOV;
+
+        // Smoothly interpolate the camera's field of view to the target FOV
+        Camera.main.fieldOfView = Mathf.Lerp(Camera.main.fieldOfView, targetFOV, Time.deltaTime * zoomSpeed);
     }
 
     // LateUpdate is called AFTER all Update functions have been called.
