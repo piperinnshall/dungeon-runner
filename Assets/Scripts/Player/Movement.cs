@@ -15,13 +15,13 @@ public class Movement : MonoBehaviour
     float inputVertical;
     bool inputJump;
 
-    float velocity = 5f;
+    float velocity = 5.5f;
     float verticalVelocity = 0f;
 
     float gravity = 9.8f;
-    float jumpForce = 18f;
+    float jumpForce = 10f;
     float jumpElapsedTime = 0;
-    float jumpTime = 0.85f;
+    float jumpTime = 0.65f;
 
     public Animator animator;
     public Transform playerCamera;
@@ -62,6 +62,7 @@ public class Movement : MonoBehaviour
     public PlayerState HandleMove()
     {
         // Play moving animation
+
         if (!cc.isGrounded)
         {
             return new Falling();
@@ -78,6 +79,8 @@ public class Movement : MonoBehaviour
 
     public PlayerState HandleJump()
     {
+        // Play jumping animation
+
         Debug.Log("Player is jumping");
         jumpElapsedTime += Time.deltaTime;
         if (jumpElapsedTime >= jumpTime)
@@ -111,18 +114,42 @@ public class Movement : MonoBehaviour
             _ => currentState
         };
 
-        // Get movement and then move the character controller
+        // Get movement direction and then move the character controller 
         Vector3 movement = GetMovement();
         cc.Move(movement);
     }
 
-    // Calculate the movement vector based on input and current state
+    // Calculate the movement vector based on input and current state, horizontal movement based on camera direction
     Vector3 GetMovement()
     {
 
         float directionX = inputHorizontal * velocity * Time.deltaTime;
         float directionZ = inputVertical * velocity * Time.deltaTime;
         float directionY;
+
+        
+        Vector3 forward = playerCamera.forward;
+        Vector3 right = playerCamera.right;
+
+        // Flatten the forward and right vectors to ignore vertical movement
+        forward.y = 0f;
+        right.y = 0f;
+
+        // Normalize the vectors to ensure consistent movement speed
+        forward.Normalize();
+        right.Normalize();
+
+        // Scale the forward and right vectors by the input direction
+        forward = forward * directionZ;
+        right = right * directionX;
+
+        if(directionX != 0f || directionZ != 0f)
+        {
+            float angle = Mathf.Atan2(forward.x + right.x, forward.z + right.z) * Mathf.Rad2Deg;
+            Quaternion rotation = Quaternion.Euler(0, angle, 0);
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, 0.15f);
+        }
+
         if (currentState is Jumping)
         {
             directionY = Mathf.SmoothStep(jumpForce, jumpForce * 0.30f, jumpElapsedTime / jumpTime) * Time.deltaTime;
@@ -141,6 +168,10 @@ public class Movement : MonoBehaviour
             }
             directionY = verticalVelocity * Time.deltaTime;
         }
-        return new Vector3(directionX, directionY, directionZ);
+        // Combine horizontal and vertical movement
+        Vector3 horizontalDirection = forward + right;
+        Vector3 verticalDirection = Vector3.up * directionY;
+
+        return horizontalDirection + verticalDirection;
     }
 }
