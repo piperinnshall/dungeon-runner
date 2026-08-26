@@ -13,45 +13,24 @@ public interface ITreasure {
   bool IsOpened { get; }
   TreasureState State { get; }
   void Add(ICoinPacket packet);
-  void Initialize(TreasureManager manager);
   void Open();
 }
 
-public class Treasure : MonoBehaviour, ITreasure {
+public class Treasure<T> : MonoBehaviour, ITreasure where T : ICoinPacket {
   [SerializeField] private string _id;
-
-  private TreasureManager _manager;
   private readonly List<ICoinPacket> _packets = new();
 
   public string Id => _id;
   public bool IsOpened { get; private set; }
   public TreasureState State => new(Id, IsOpened, _packets.ToList());
-  public void Add(ICoinPacket packet) => _packets.Add(packet);
-  public void Initialize(TreasureManager manager) => _manager = manager;
 
-  public void Open() {
-    // ...
-  }
+  private void Awake() => _packets.Add(ICoinPacket.Create<T>());
+  public void Add(ICoinPacket packet) => _packets.Add(packet);
+  public void Open() => IsOpened = true;
 }
 
-/*
-public class StubTreasure<T> : ITreasure where T : ICoinPacket {
-  private TreasureManager _manager;
-  private readonly List<ICoinPacket> _packets = new();
-  public IReadOnlyList<ICoinPacket> Packets => _packets;
-  public bool IsOpened { get; private set; }
-
-  public StubTreasure() => _packets.Add(ICoinPacket.Create<T>());
-
-  public void Open() {
-    if (IsOpened) return;
-    if (_manager == null) throw new InvalidOperationException("TreasureManager not initialized");
-    IsOpened = true;
-    _packets.ForEach(_manager.Add);
-    _packets.Clear();
-  }
-
-  public void Add(ICoinPacket packet) => _packets.Add(packet);
-  public void Initialize(TreasureManager manager) => _manager = manager;
-}
-*/
+// Unity needs concrete MonoBehaviour types for GameObject's in the Inspector.
+public class CheapTreasure : Treasure<ICoinPacket.Cheap> {}
+public class ModerateTreasure : Treasure<ICoinPacket.Moderate> {}
+public class ValuableTreasure : Treasure<ICoinPacket.Valuable> {}
+public class SacredTreasure : Treasure<ICoinPacket.Sacred> {}

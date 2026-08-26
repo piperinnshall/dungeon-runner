@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+public record TreasureManagerState(
+  IReadOnlyList<ICoinPacket> Packets,
+);
+
 public class TreasureManager {
   private List<ICoinPacket> _packets = new();
   public int GetTotalCoins() => _packets.Sum(p => p.Amount);
