@@ -27,17 +27,14 @@ public interface ICoinPacket {
   public sealed record Moderate(int Amount) : ICoinPacket;
   public sealed record Valuable(int Amount) : ICoinPacket;
   public sealed record Sacred(int Amount) : ICoinPacket;
-
   public static ICoinPacket Create<T>() where T : ICoinPacket {
-    var typeName = typeof(T).Name;
-    var amount = typeName switch {
-      nameof(Cheap) => UnityEngine.Random.Range(1, 6),
-      nameof(Moderate) => UnityEngine.Random.Range(7, 14),
-      nameof(Valuable) => UnityEngine.Random.Range(15, 21),
-      nameof(Sacred) => UnityEngine.Random.Range(22, 27),
-      _ => throw new System.ArgumentException($"Unknown packet type: {typeName}")
+    return typeof(T) switch {
+        var t when t == typeof(Cheap) => new Cheap(UnityEngine.Random.Range(1, 6)),
+        var t when t == typeof(Moderate) => new Moderate(UnityEngine.Random.Range(7, 14)),
+        var t when t == typeof(Valuable) => new Valuable(UnityEngine.Random.Range(15, 21)),
+        var t when t == typeof(Sacred) => new Sacred(UnityEngine.Random.Range(22, 27)),
+        _ => throw new ArgumentException($"Unknown packet type: {typeof(T)}")
     };
-    return (ICoinPacket)Activator.CreateInstance(typeof(T), amount);
   }
 }
 
