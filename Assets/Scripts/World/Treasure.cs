@@ -2,14 +2,39 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public record TreasureState(
+  string Id,
+  bool IsOpened,
+  IReadOnlyList<ICoinPacket> Packets,
+);
+
 public interface ITreasure {
-  IReadOnlyList<ICoinPacket> Packets { get; }
+  string Id { get; }
   bool IsOpened { get; }
-  void Open();
+  TreasureState State { get; }
   void Add(ICoinPacket packet);
   void Initialize(TreasureManager manager);
+  void Open();
 }
 
+public class Treasure : MonoBehaviour, ITreasure {
+  [SerializeField] private string _id;
+
+  private TreasureManager _manager;
+  private readonly List<ICoinPacket> _packets = new();
+
+  public string Id => _id;
+  public bool IsOpened { get; private set; }
+  public TreasureState State => new(Id, IsOpened, _packets.ToList());
+  public void Add(ICoinPacket packet) => _packets.Add(packet);
+  public void Initialize(TreasureManager manager) => _manager = manager;
+
+  public void Open() {
+    // ...
+  }
+}
+
+/*
 public class StubTreasure<T> : ITreasure where T : ICoinPacket {
   private TreasureManager _manager;
   private readonly List<ICoinPacket> _packets = new();
@@ -29,4 +54,4 @@ public class StubTreasure<T> : ITreasure where T : ICoinPacket {
   public void Add(ICoinPacket packet) => _packets.Add(packet);
   public void Initialize(TreasureManager manager) => _manager = manager;
 }
-
+*/
