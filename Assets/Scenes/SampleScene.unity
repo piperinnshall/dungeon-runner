@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 9eeb0b06e3a21f345b40a1bff0a21271, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -454,15 +454,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: adaa7651137679b44babefc3546c4911, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3.780167
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: adaa7651137679b44babefc3546c4911, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.000000086296495
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: adaa7651137679b44babefc3546c4911, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.591431
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: adaa7651137679b44babefc3546c4911, type: 3}
       propertyPath: m_LocalRotation.w
@@ -549,7 +549,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 0e66409cacff56144a613d4c2b768161, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 1
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
