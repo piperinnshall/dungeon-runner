@@ -107,7 +107,7 @@ CapsuleCollider:
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
-  m_ProvidesContacts: 0
+  m_ProvidesContacts: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
@@ -198,10 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 818aaaca7555d1c4d9d2c6c86a05266b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Skeleton_Behaviour
-  speed: 2
-  rayDistance: 10
-  viewAngle: 140
-  attackDistance: 0.5
+  currentState: 0
 --- !u!4 &7187591684676726688 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1005806008958217286, guid: 24482ef7632aa6042b45735370df80ec, type: 3}
