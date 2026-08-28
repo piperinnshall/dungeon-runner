@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 9eeb0b06e3a21f345b40a1bff0a21271, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -599,10 +599,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e099e6c90eacf4469ebc7878acc8535, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Treasure
-  itemName: Treasure
-  pickupKey: 101
-  interactionRange: 2
-  pickupEffectPrefab: {fileID: 0}
 --- !u!65 &207670575
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4378,10 +4374,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e099e6c90eacf4469ebc7878acc8535, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Treasure
-  itemName: Treasure
-  pickupKey: 101
-  interactionRange: 2
-  pickupEffectPrefab: {fileID: 0}
 --- !u!65 &1164502060
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5160,10 +5152,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e099e6c90eacf4469ebc7878acc8535, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Treasure
-  itemName: Treasure
-  pickupKey: 101
-  interactionRange: 2
-  pickupEffectPrefab: {fileID: 0}
 --- !u!65 &1413985407
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6586,10 +6574,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e099e6c90eacf4469ebc7878acc8535, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Treasure
-  itemName: Treasure
-  pickupKey: 101
-  interactionRange: 2
-  pickupEffectPrefab: {fileID: 0}
 --- !u!65 &1688352642
 BoxCollider:
   m_ObjectHideFlags: 0
