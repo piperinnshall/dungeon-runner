@@ -23,7 +23,7 @@ public class Skeleton_PatrolState : MonoBehaviour
 
         agent = GetComponent<NavMeshAgent>();
 
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
 
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 
@@ -31,14 +31,10 @@ public class Skeleton_PatrolState : MonoBehaviour
         {
             player = playerObject.transform;
         }
-        else
-        {
-            Debug.LogError("Player with tag 'Player' was not found"); //Make sure player is tagged correctly in the scene
-        }
 
         if (patrolPointA == null)
         {
-            Debug.LogError("Patrol Point A has not been assigned"); //Make sure to assign patrol points in the inspector
+            Debug.LogError("Patrol Point A has not been assigned");
         }
 
         if (patrolPointB == null)
@@ -61,12 +57,15 @@ public class Skeleton_PatrolState : MonoBehaviour
 
         if (player != null)
         {
-            float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+            float distanceToPlayer = Vector3.Distance(
+                transform.position,
+                player.position
+            );
 
-            //player is inside detection radius
+            // Player is inside detection radius
             if (distanceToPlayer <= detectionRadius)
             {
-                //only detect player if there is line of sight
+                // Only detect player if there is line of sight
                 if (HasLineOfSight())
                 {
                     StopPatrol();
@@ -99,13 +98,17 @@ public class Skeleton_PatrolState : MonoBehaviour
 
         agent.isStopped = false;
         agent.speed = patrolSpeed;
+        agent.stoppingDistance = 0f;
 
         agent.SetDestination(targetPoint.position);
 
-        //play walking animation
+        // Play walking animation
         if (animator != null)
         {
-            animator.Play("1HandedWalk");
+            if (!animator.GetCurrentAnimatorStateInfo(0).IsName("1HandedWalk"))
+            {
+                animator.Play("1HandedWalk");
+            }
         }
 
         if (agent.remainingDistance <= 0.5f && !agent.pathPending)
@@ -120,12 +123,16 @@ public class Skeleton_PatrolState : MonoBehaviour
         if (agent != null && agent.isOnNavMesh)
         {
             agent.isStopped = true;
+            agent.velocity = Vector3.zero;
             agent.ResetPath();
         }
 
         if (animator != null)
         {
-            animator.Play("Idle1Handed");
+            if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Idle1Handed"))
+            {
+                animator.Play("Idle1Handed");
+            }
         }
     }
 
@@ -141,15 +148,13 @@ public class Skeleton_PatrolState : MonoBehaviour
 
         if (Physics.Raycast(transform.position, direction, out hit, distance))
         {
-            Debug.DrawRay(transform.position, direction * hit.distance, Color.red);
-
-            //the first thing hit is the player
+            // The first thing hit is the player
             if (hit.collider.transform.root.CompareTag("Player"))
             {
                 return true;
             }
 
-            //something else is blocking the player
+            // Something else is blocking the player
             return false;
         }
 
