@@ -15,13 +15,18 @@ public class Movement : MonoBehaviour
     float inputVertical;
     bool inputJump;
 
+    // The horizontal velocity of the player, used for moving
     float velocity = 5.5f;
+    // The vertical velocity of the player, used for jumping and falling
     float verticalVelocity = 0f;
 
-    float gravity = 9.8f;
-    float jumpForce = 10f;
+    float gravity = 10f;
+    // The force applied to the player when jumping, the higher the value, the higher the player will jump
+    float jumpForce = 9.8f;
+    // The time elapsed since the player started jumping, used to determine when to start falling
     float jumpElapsedTime = 0;
-    float jumpTime = 0.65f;
+    //max time the player can stay in the air while jumping, after this time the player will start falling
+    float jumpTime = 0.95f;
 
     public Animator animator;
     public Transform playerCamera;
