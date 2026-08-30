@@ -1,4 +1,4 @@
-﻿
+
 using UnityEditor.VersionControl;
 using UnityEngine;
 
@@ -23,7 +23,7 @@ public class ThirdPersonController : MonoBehaviour
     [Tooltip("The higher the value, the higher the character will jump.")]
     public float jumpForce = 18f;
     [Tooltip("Stay in the air. The higher the value, the longer the character floats before falling.")]
-    public float jumpTime = 0.85f;
+    public float jumpTime = 0.95f;
     [Space]
     [Tooltip("Force that pulls the player down. Changing this value causes all movement, jumping and falling to be changed as well.")]
     public float gravity = 9.8f;
