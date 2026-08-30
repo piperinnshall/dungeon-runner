@@ -51,7 +51,7 @@ MonoBehaviour:
   fuseTime: 3
   explosionRadius: 3
   explodableTag: Explodable
-  explosionEffectPrefab: {fileID: 0}
+  explosionEffectPrefab: {fileID: 1828994577626916255, guid: 2b03430213ae4404b948826d71c515e4, type: 3}
 --- !u!54 &620797338176647524
 Rigidbody:
   m_ObjectHideFlags: 0

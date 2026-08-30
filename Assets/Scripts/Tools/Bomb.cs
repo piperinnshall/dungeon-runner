@@ -59,7 +59,7 @@ public class Bomb : MonoBehaviour
         }
     }
 
-    void Ignite()
+    public void Ignite()
     {
         ignited = true;
         StartCoroutine(FuseCountdown());
@@ -77,6 +77,10 @@ public class Bomb : MonoBehaviour
         if (explosionEffectPrefab != null)
         {
             Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
+            explosionEffectPrefab.GetComponent<ParticleSystem>().Play();
+            float duration = explosionEffectPrefab.GetComponent<ParticleSystem>().main.duration +
+                explosionEffectPrefab.GetComponent<ParticleSystem>().main.startLifetime.constantMax;
+            Destroy(explosionEffectPrefab, duration);
         }
 
         // Find everything within the explosion radius

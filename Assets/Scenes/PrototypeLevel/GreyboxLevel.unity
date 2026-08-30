@@ -3070,6 +3070,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 558078977}
     - target: {fileID: 2615983890377418500, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+      propertyPath: bomb
+      value: 
+      objectReference: {fileID: 7191237824088780921, guid: 441d7d44d7e06ef47add36b3faf1ee3a, type: 3}
+    - target: {fileID: 2615983890377418500, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 558078977}
