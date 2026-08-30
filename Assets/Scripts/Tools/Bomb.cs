@@ -9,12 +9,6 @@ using UnityEngine;
 /// </summary>
 public class Bomb : MonoBehaviour
 {
-    [Tooltip("Key used to ignite the bomb.")]
-    public KeyCode igniteKey = KeyCode.E;
-
-    [Tooltip("How close the player must be to ignite the bomb.")]
-    public float interactionRange = 2f;
-
     [Tooltip("Seconds between ignition and explosion.")]
     public float fuseTime = 5f;
 
@@ -52,14 +46,9 @@ public class Bomb : MonoBehaviour
             return;
 
         float distance = Vector3.Distance(player.position, transform.position);
-
-        if (distance <= interactionRange && Input.GetKeyDown(igniteKey))
-        {
-            Ignite();
-        }
     }
 
-    void Ignite()
+    public void Ignite()
     {
         ignited = true;
         StartCoroutine(FuseCountdown());
@@ -77,6 +66,10 @@ public class Bomb : MonoBehaviour
         if (explosionEffectPrefab != null)
         {
             Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
+            explosionEffectPrefab.GetComponent<ParticleSystem>().Play();
+            float duration = explosionEffectPrefab.GetComponent<ParticleSystem>().main.duration +
+                explosionEffectPrefab.GetComponent<ParticleSystem>().main.startLifetime.constantMax;
+            Destroy(explosionEffectPrefab, duration);
         }
 
         // Find everything within the explosion radius
@@ -102,8 +95,5 @@ public class Bomb : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, interactionRange);
     }
 }

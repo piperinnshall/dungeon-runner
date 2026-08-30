@@ -1,4 +1,6 @@
+using System.ComponentModel;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public interface PlayerState { }
 
@@ -27,6 +29,9 @@ public class Movement : MonoBehaviour
     float jumpElapsedTime = 0;
     //max time the player can stay in the air while jumping, after this time the player will start falling
     float jumpTime = 0.95f;
+
+    [SerializeField] Bomb bomb;
+    private GameObject currentBomb;
 
     public Animator animator;
     public Transform playerCamera;
@@ -118,6 +123,12 @@ public class Movement : MonoBehaviour
             Falling => HandleFall(),
             _ => currentState
         };
+
+        if(Input.GetKeyDown(KeyCode.E) && bomb != null)
+        {
+            currentBomb = Instantiate(bomb.gameObject, transform.position + transform.forward * 1.5f, Quaternion.identity);
+            currentBomb.GetComponent<Bomb>().Ignite();
+        }
 
         // Get movement direction and then move the character controller 
         Vector3 movement = GetMovement();
