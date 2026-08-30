@@ -11,7 +11,6 @@ public class Skeleton_AttackState : MonoBehaviour
 
     private Animator animator;
 
-    public float chaseRadius = 10f;
     public float attackDistance = 1.5f;
 
     public float attackCooldown = 1f;
@@ -50,7 +49,7 @@ public class Skeleton_AttackState : MonoBehaviour
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
         //player left the chase radius
-        if (distanceToPlayer > chaseRadius)
+        if (distanceToPlayer > skeleton.chaseRadius)
         {
             attacking = false;
             skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Patrol);
@@ -102,7 +101,7 @@ public class Skeleton_AttackState : MonoBehaviour
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
         //player has moved away
-        if (distanceToPlayer > chaseRadius)
+        if (distanceToPlayer > skeleton.chaseRadius)
         {
             skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Patrol);
 
