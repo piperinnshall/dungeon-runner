@@ -13,7 +13,6 @@ public class Skeleton_ChaseState : MonoBehaviour
     private Collider playerCollider;
 
     public float chaseSpeed = 3f;
-    public float chaseRadius = 10f;
     public float attackDistance = 1.5f;
 
     void Start()
@@ -53,7 +52,7 @@ public class Skeleton_ChaseState : MonoBehaviour
             player.position
         );
 
-        if (distanceToPlayer > chaseRadius) //player has left the chase radius
+        if (distanceToPlayer > skeleton.chaseRadius) //player has left the chase radius
         {
             StopChasing();
             skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Patrol);

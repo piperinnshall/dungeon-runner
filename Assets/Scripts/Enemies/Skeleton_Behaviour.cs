@@ -10,7 +10,7 @@ public class Skeleton_Behaviour : MonoBehaviour
     }
 
     public EnemyState currentState = EnemyState.Patrol;
-
+    public float chaseRadius = 20f;
     private Skeleton_PatrolState patrolState;
     private Skeleton_ChaseState chaseState;
     private Skeleton_AttackState attackState;
