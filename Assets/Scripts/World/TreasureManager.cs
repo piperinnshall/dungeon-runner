@@ -20,7 +20,11 @@ public class TreasureManager {
 
   public int GetTotalCoins() => _packets.Sum(p => p.Amount);
 
-  public void Open(List<ICoinPacket> packets) => _packets.AddRange(packets);
+  public void Open(List<ICoinPacket> packets) {
+    _packets.AddRange(packets);
+    Debug.Log($"Opened Treasure");
+    Debug.Log($"Player has: {GetTotalCoins()} Coins");
+  }
 
   public void Redistribute() {
     var closed = _treasures.Where(t => !t.State.IsOpened).ToList();
