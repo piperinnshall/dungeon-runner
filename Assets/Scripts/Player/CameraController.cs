@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 /*
@@ -97,12 +96,20 @@ public class CameraController : MonoBehaviour
     {
         // Calculate the desired position of the camera based on its local position
         Vector3 desiredPosition = transform.TransformPoint(desiredLocalPosition);
-        // Perform a raycast from the camera's position to the desired position
+
+        // Project the raycast onto the same vertical plane as the desired position so collisions
+        // are checked horizontally and the camera won't be pushed up/down.
+        Vector3 origin = new Vector3(transform.position.x, desiredPosition.y, transform.position.z);
+        Vector3 target = new Vector3(desiredPosition.x, desiredPosition.y, desiredPosition.z);
+
         RaycastHit hit;
-        if (Physics.Linecast(transform.position, desiredPosition, out hit, collisionMask))
+        if (Physics.Linecast(origin, target, out hit, collisionMask))
         {
-            // If there's a collision, move the camera to the hit point minus an offset
-            cameraTransform.position = hit.point - transform.forward * collisionOffset;
+            // If there's a collision, move the camera to the hit point minus an offset,
+            // but keep the camera at the desired vertical (Y) position so it doesn't move up/down.
+            Vector3 corrected = hit.point - transform.forward * collisionOffset;
+            corrected.y = desiredPosition.y;
+            cameraTransform.position = corrected;
         }
         else
         {
