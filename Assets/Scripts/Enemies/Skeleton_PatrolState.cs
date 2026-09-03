@@ -65,13 +65,10 @@ public class Skeleton_PatrolState : MonoBehaviour
             // Player is inside detection radius
             if (distanceToPlayer <= detectionRadius)
             {
-                // Only detect player if there is line of sight
-                if (HasLineOfSight())
-                {
-                    StopPatrol();
+
                     skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Chase);
                     return;
-                }
+                
             }
         }
 

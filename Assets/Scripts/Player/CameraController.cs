@@ -20,7 +20,7 @@ public class CameraController : MonoBehaviour
     public bool canZoom = false;
     [Space]
     [Tooltip("The higher it is, the faster the camera moves. It is recommended to increase this value for games that uses joystick.")]
-    public float sensitivity = 5f;
+    public float sensitivity = 2.5f;
 
     [Tooltip("Camera Y rotation limits. The X axis is the maximum it can go up and the Y axis is the maximum it can go down.")]
     public Vector2 cameraLimit = new Vector2(-60, 70);
@@ -33,7 +33,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] LayerMask collisionMask; // Layer mask for objects that the camera can collide with
 
     [SerializeField] float defaultFOV = 60f; // Default field of view for the camera
-    [SerializeField] float topDownFOV = 80f; // Field of view when the camera is looking directly down
+    [SerializeField] float topDownFOV = 70f; // Field of view when the camera is looking directly down
     [SerializeField] float zoomSpeed = 10f; // Speed at which the camera zooms in and out
 
     Camera playerCamera;
@@ -119,6 +119,7 @@ public class CameraController : MonoBehaviour
         bool isLookingDown = lookingDownAmount > 0.7f;
 
         // If the camera is looking down, set the field of view to the top-down FOV, otherwise set it to the default FOV
+        // Changing variable in Unity works but doesn't work here sometimes
         float targetFOV = isLookingDown ? topDownFOV : defaultFOV;
 
         // Smoothly interpolate the camera's field of view to the target FOV
