@@ -65,11 +65,20 @@ public class Bomb : MonoBehaviour
         // Optional visual effect
         if (explosionEffectPrefab != null)
         {
-            Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
-            explosionEffectPrefab.GetComponent<ParticleSystem>().Play();
-            float duration = explosionEffectPrefab.GetComponent<ParticleSystem>().main.duration +
-                explosionEffectPrefab.GetComponent<ParticleSystem>().main.startLifetime.constantMax;
-            Destroy(explosionEffectPrefab, duration);
+            GameObject explosion = Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
+
+            ParticleSystem particleSystem = explosion.GetComponent<ParticleSystem>();
+
+            if (particleSystem != null)
+            {
+                particleSystem.Play();
+                float duration = particleSystem.main.duration + particleSystem.main.startLifetime.constantMax;
+                Destroy(explosion, duration);
+            }
+            else
+            {
+                Destroy(explosion, 5f);
+            }
         }
 
         // Find everything within the explosion radius
@@ -83,7 +92,7 @@ public class Bomb : MonoBehaviour
             }
         }
 
-        // Let any listeners know the bomb is gone (e.g. BombPlacer)
+        // Let any listeners know the bomb is gone
         OnBombDestroyed?.Invoke();
 
         Destroy(gameObject);

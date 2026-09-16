@@ -5,17 +5,17 @@ public class Skeleton_AttackState : MonoBehaviour
     private Skeleton_Behaviour skeleton;
 
     private Transform player;
-
+    private Combat playerCombat;
     private Collider skeletonCollider;
     private Collider playerCollider;
-
+    private Health playerHealth;
     private Animator animator;
 
     public float attackDistance = 1.5f;
-
-    public float attackCooldown = 1f;
+    public float attackCooldown = 1.2f; //animation duration is 0.66 seconds trust
 
     private bool attacking = false;
+    private float attackTimer = 0f;
 
     void Start()
     {
@@ -31,6 +31,8 @@ public class Skeleton_AttackState : MonoBehaviour
         {
             player = playerObject.transform;
             playerCollider = player.GetComponentInChildren<Collider>();
+            playerCombat = playerObject.GetComponent<Combat>();
+            playerHealth = playerObject.GetComponent<Health>();
         }
         else
         {
@@ -48,28 +50,37 @@ public class Skeleton_AttackState : MonoBehaviour
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        //player left the chase radius
+        // Player left the chase radius
         if (distanceToPlayer > skeleton.chaseRadius)
         {
             attacking = false;
+            attackTimer = 0f;
             skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Patrol);
             return;
         }
 
-        //player moved out of attack distance
+        // Player moved out of attack distance
         if (GetColliderDistance() > attackDistance)
         {
             attacking = false;
+            attackTimer = 0f;
             skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Chase);
             return;
         }
 
-        //always face the player while in attack range
+        // Always face the player while in attack range
         FacePlayer();
 
-        //attack is still playing
+        // Count down the attack timer
         if (attacking)
         {
+            attackTimer -= Time.deltaTime;
+
+            if (attackTimer <= 0f)
+            {
+                attacking = false;
+            }
+
             return;
         }
 
@@ -79,42 +90,25 @@ public class Skeleton_AttackState : MonoBehaviour
     void Attack()
     {
         attacking = true;
+        attackTimer = attackCooldown;
 
         if (animator != null)
         {
             animator.Play("1HandedAttack1", 0, 0f);
         }
 
-        Invoke("FinishAttack", attackCooldown);
+        if (playerHealth != null)
+        {
+            playerHealth.TakeDamage(1, transform.position);
+            Debug.Log("Player Health: " + playerHealth.health);
+        }
     }
-
-    void FinishAttack()
+    public void DealDamage()
     {
-        attacking = false;
-
-        if (player == null)
+        if (playerCombat != null)
         {
-            skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Patrol);
-            return;
+            playerCombat.TakeDamage(1);
         }
-
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
-
-        //player has moved away
-        if (distanceToPlayer > skeleton.chaseRadius)
-        {
-            skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Patrol);
-
-            return;
-        }
-
-        //player is still close enough to attack
-        if (GetColliderDistance() <= attackDistance)
-        {
-            return;
-        }
-
-        skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Chase);
     }
 
     void FacePlayer()
