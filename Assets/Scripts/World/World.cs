@@ -7,12 +7,30 @@ public class World {
   public TreasureManager Treasure { get; private set; } = new();
 
   public void Start() {
-    Game.Transition(new IState.Loading());
-    Test.Treasure(Treasure);
+    Game.Transition(new IState.Loading(() => { Test.TreasureView(Treasure); }));
   }
 }
 
 class Test {
+  public static void TreasureView(TreasureManager tm) {
+
+    var treasures = new List<ITreasure> {
+      new Treasure<ICoinPacket.Cheap>("chest_test"),
+    };
+
+    var views = UnityEngine.Object.FindObjectsByType<TreasureView>();
+    foreach (var view in views){
+      view.Initialize(treasures.Single(t => t.State.Id == view.Id));
+    }
+
+    tm.Initialize(treasures);
+    treasures.ForEach(t => t.Initialize(tm));
+
+    Debug.Log($"Player has: {tm.GetTotalCoins()} Coins");  
+  }
+}
+
+ /*
   public static void Treasure(TreasureManager tm) {
     Debug.Log("Create All World Treasures:");
     var treasures = new List<ITreasure> {
@@ -36,4 +54,6 @@ class Test {
     Debug.Log($"Player has: {tm.GetTotalCoins()} Coins");
     treasures.ForEach(t => Debug.Log($"Treasure: {string.Join(", ", t.State.Packets)} (IsOpened: {t.State.IsOpened})"));
   }
-}
+  */
+
+

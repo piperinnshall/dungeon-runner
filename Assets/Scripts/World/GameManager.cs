@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public interface IState {
   public sealed record Menu : IState;
-  public sealed record Loading : IState;
+  public sealed record Loading(Action Callback) : IState;
   public sealed record Playing : IState;
   public sealed record Dead : IState;
 }
@@ -30,6 +30,7 @@ public class GameManager {
 
   private void OnWorldLoaded(Scene scene, LoadSceneMode mode) {
     SceneManager.sceneLoaded -= OnWorldLoaded;
+    ((IState.Loading)_state).Callback();
     Transition(new IState.Playing());
   }
 }
