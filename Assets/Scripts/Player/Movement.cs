@@ -1,5 +1,7 @@
 using NUnit.Framework.Interfaces;
 using System.ComponentModel;
+using System.Reflection.Metadata.Ecma335;
+using Unity.AI.Navigation.LowLevel;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -20,7 +22,7 @@ public class Movement : MonoBehaviour
     float inputVertical;
     bool inputJump;
     bool inputAttack;
-    bool inputBlock;
+    public bool inputBlock;
 
     // The horizontal velocity of the player, used for moving
     float velocity = 5.5f;
@@ -44,7 +46,7 @@ public class Movement : MonoBehaviour
     // How far the player's attack reaches
     float attackRange = 1.5f;
     // Is the player blocking?
-    bool isBlocking = false;
+    public bool isBlocking = false;
     // Layer(s) that enemies are on, this is for collision so that attacks can land
     public LayerMask enemyLayers;
 
@@ -76,9 +78,12 @@ public class Movement : MonoBehaviour
         {
             return new Falling();
         }
-        else if (cc.isGrounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime)
+        else if (cc.isGrounded && Time.time >= nextAttackTime)
         {
-            return new Attacking();
+            if (Input.GetMouseButtonDown(0))
+            {
+                return new Attacking();
+            }
         }
         else if (cc.isGrounded && Input.GetMouseButton(1))
         {
@@ -137,6 +142,12 @@ public class Movement : MonoBehaviour
         // Play attacking animation
         Debug.Log("Player is attacking");
         Attack();
+
+        if (Input.GetMouseButtonDown(0) == false)
+        {
+            return new Idle();
+        }
+
         return currentState;
     }
 
@@ -145,6 +156,10 @@ public class Movement : MonoBehaviour
         // Play blocking animation
         Debug.Log("Player is blocking");
         startBlocking();
+        if (Input.GetMouseButton(1) == false)
+        {
+            return new Idle();
+        }
         return currentState;
     }
 
@@ -250,7 +265,8 @@ public class Movement : MonoBehaviour
         // Damage enemies
         foreach (Collider enemy in hitEnemies)
         {
-            // Damage enemy/enemies
+            // EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
+            // enemyHealth.takeDamage(attackDamage);
         }
     }
 

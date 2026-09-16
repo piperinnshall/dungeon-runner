@@ -262,9 +262,17 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 713822037381369479, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 713822037381369479, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 222240921}
+    - target: {fileID: 2615983890377418500, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+      propertyPath: attackPoint
+      value: 
+      objectReference: {fileID: 5692116262577274468}
     - target: {fileID: 2615983890377418500, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
       propertyPath: playerCamera
       value: 
@@ -318,6 +326,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+--- !u!4 &5692116262577274468 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 285605019951423836, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+  m_PrefabInstance: {fileID: 5692116262577274467}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
