@@ -8,7 +8,7 @@ public class Skeleton_Behaviour : MonoBehaviour
         Chase,
         Attack
     }
-
+    public bool isDead = false;
     public EnemyState currentState = EnemyState.Patrol;
     public float chaseRadius = 20f;
     private Skeleton_PatrolState patrolState;
@@ -39,6 +39,10 @@ public class Skeleton_Behaviour : MonoBehaviour
 
     void Update()
     {
+        if (isDead)
+        {
+            return;
+        }
         switch (currentState)
         {
             case EnemyState.Patrol:

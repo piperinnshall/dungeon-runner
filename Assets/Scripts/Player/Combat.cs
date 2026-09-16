@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public enum CombatState
@@ -14,7 +13,7 @@ public class Combat : MonoBehaviour
     public float attackRange = 1.5f;
     public float attackCoolldown = 0.5f;
     public int attackDamage = 1;
-    public LayerMask enemyLayers; // Layer(s) that enemies are on, this is for collision
+    public LayerMask enemyLayers;
 
     [Header("References")]
     public Transform attackPoint;
@@ -23,57 +22,86 @@ public class Combat : MonoBehaviour
 
     private CombatState currentState = CombatState.Idle;
     private float nextAttackTime = 0f;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+
+
+    void Update()
     {
-        // Block when holding right mouse button
-        if(Input.GetMouseButton(1) && currentState != CombatState.Attacking)
+        // Blocking
+        if (Input.GetMouseButton(1) &&
+            currentState != CombatState.Attacking)
         {
             StartBlocking();
-        } else if(Input.GetMouseButton(1) && currentState == CombatState.Blocking)
+        }
+
+        if (Input.GetMouseButtonUp(1) &&
+            currentState == CombatState.Blocking)
         {
             StopBlocking();
         }
 
-        if(Time.time >= nextAttackTime && currentState == CombatState.Idle)
+        // Face camera direction while blocking
+        if (currentState == CombatState.Blocking)
         {
-            if(Input.GetMouseButtonDown(0))
-            {
-                Attack();
-            }
+            FaceCameraDirection();
+        }
+
+        // Attack
+        if (Time.time >= nextAttackTime &&
+            currentState == CombatState.Idle &&
+            Input.GetMouseButtonDown(0))
+        {
+            Attack();
         }
     }
 
     void Attack()
     {
+        Debug.Log("Player is attacking");
+
         currentState = CombatState.Attacking;
         nextAttackTime = Time.time + attackCoolldown;
 
-        //animator.SetTrigger("Attack");
+        if (animator != null)
+        {
+            // animator.SetTrigger("Attack");
+        }
 
-        // Enemies in range of attack
         Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
 
-        // Damage enemies
-        foreach(Collider enemy in hitEnemies)
+        foreach (Collider enemy in hitEnemies)
         {
-            //EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
-            //enemyHealth.takeDamage(attackDamage);
+            EnemyHealth enemyHealth = enemy.GetComponentInParent<EnemyHealth>();
+
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(attackDamage, transform.position);
+
+                Debug.Log("Skeleton Health: " + enemyHealth.health);
+            }
         }
+
         Invoke(nameof(ResetState), attackCoolldown);
     }
 
     void StartBlocking()
     {
+        if (currentState == CombatState.Blocking)
+        {
+            return;
+        }
+
         currentState = CombatState.Blocking;
-        // Disable movement
-        //animator.setBool("isBlocking, true);
+
+        // Disable movement here if needed
+        // animator.SetBool("isBlocking", true);
     }
 
     void StopBlocking()
     {
-        //animator.setBool("isBlocking, false);
-        // Enable movement
+        // animator.SetBool("isBlocking", false);
+
+        // Enable movement here if needed
+
         ResetState();
     }
 
@@ -84,24 +112,39 @@ public class Combat : MonoBehaviour
 
     public void FaceCameraDirection()
     {
-        // Get camera foward vector ignoring vertical tilt (Y-axis)
+        if (playerCamera == null)
+        {
+            return;
+        }
+
         Vector3 camForward = playerCamera.forward;
         camForward.y = 0f;
 
-        if(camForward.sqrMagnitude > 0.01f)
+        if (camForward.sqrMagnitude > 0.01f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(camForward);
-            // Smoothly rotate toward camera facing direction
+
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 15f);
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void TakeDamage(int damage)
     {
-        while (currentState == CombatState.Blocking)
+        Health playerHealth = GetComponent<Health>();
+
+        if (playerHealth != null)
         {
-            FaceCameraDirection();
+            playerHealth.TakeDamage(damage, transform.position);
+
+            Debug.Log("Player Health: " + playerHealth.health);
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        if (attackPoint != null)
+        {
+            Gizmos.DrawWireSphere(attackPoint.position, attackRange);
         }
     }
 }
