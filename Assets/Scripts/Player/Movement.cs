@@ -22,13 +22,13 @@ public class Movement : MonoBehaviour
     // The vertical velocity of the player, used for jumping and falling
     float verticalVelocity = 0f;
 
-    float gravity = 10f;
+    float gravity = 2.5f;
     // The force applied to the player when jumping, the higher the value, the higher the player will jump
-    float jumpForce = 9.8f;
+    float jumpForce = 2.5f;
     // The time elapsed since the player started jumping, used to determine when to start falling
     float jumpElapsedTime = 0;
     //max time the player can stay in the air while jumping, after this time the player will start falling
-    float jumpTime = 0.95f;
+    float jumpTime = 0.7f;
 
     [SerializeField] Bomb bomb;
     private GameObject currentBomb;
