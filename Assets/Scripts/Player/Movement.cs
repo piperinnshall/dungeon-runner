@@ -45,6 +45,12 @@ public class Movement : MonoBehaviour
     float damage = 1f;
     // How far the player's attack reaches
     float attackRange = 1.5f;
+    // Time when the player started attacking, used to determine when to stop attacking
+    float attackStartTime = 0f;
+    // Duration of the attack animation in seconds
+    float attackDuration = 0.5f; 
+    // Ensure Attack() is only called once per attack window
+    bool hasAttacked;
     // Is the player blocking?
     public bool isBlocking = false;
     // Layer(s) that enemies are on, this is for collision so that attacks can land
@@ -78,12 +84,11 @@ public class Movement : MonoBehaviour
         {
             return new Falling();
         }
-        else if (cc.isGrounded && Time.time >= nextAttackTime)
+        else if (cc.isGrounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                return new Attacking();
-            }
+            attackStartTime = Time.time;
+            hasAttacked = false;
+            return new Attacking();
         }
         else if (cc.isGrounded && Input.GetMouseButton(1))
         {
@@ -139,11 +144,16 @@ public class Movement : MonoBehaviour
 
     public PlayerState HandleAttack()
     {
-        // Play attacking animation
-        Debug.Log("Player is attacking");
-        Attack();
+        if (!hasAttacked)
+        {
+            Attack();
+            hasAttacked = true;
+            Debug.Log("Player is attacking");
+            // Play attack animation
+            nextAttackTime = Time.time + attackCoolldown;
+        }
 
-        if (Input.GetMouseButtonDown(0) == false)
+        if(Time.time - attackStartTime >= attackDuration)
         {
             return new Idle();
         }
@@ -155,7 +165,7 @@ public class Movement : MonoBehaviour
     {
         // Play blocking animation
         Debug.Log("Player is blocking");
-        startBlocking();
+        StartBlocking();
         if (Input.GetMouseButton(1) == false)
         {
             return new Idle();
@@ -257,8 +267,6 @@ public class Movement : MonoBehaviour
 
     void Attack()
     {
-        nextAttackTime = Time.time + attackCoolldown;
-
         // Enemies in range of attack
         Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
 
@@ -270,7 +278,7 @@ public class Movement : MonoBehaviour
         }
     }
 
-    void startBlocking()
+    void StartBlocking()
     {
         isBlocking = true;
     }
