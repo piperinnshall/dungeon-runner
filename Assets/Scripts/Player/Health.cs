@@ -1,4 +1,5 @@
 using System;
+using UnityEditor;
 using UnityEngine;
 
 public class Health : MonoBehaviour
@@ -6,8 +7,8 @@ public class Health : MonoBehaviour
     public int maxHealth = 5;
     public int health;
     public Boolean isDead = false;
-    private CombatState playerCombat;
 
+    [SerializeField] Movement moveScript;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -17,6 +18,7 @@ public class Health : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        
     }
 
     public void TakeDamage(int amount, Vector3 attackerPosition)
@@ -25,7 +27,7 @@ public class Health : MonoBehaviour
             return;
 
         // If blocking...
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (moveScript.isBlocking == true)
         {
             // Check if attacker is infront of player
             Vector3 dirToAttacker = (attackerPosition - transform.position).normalized;

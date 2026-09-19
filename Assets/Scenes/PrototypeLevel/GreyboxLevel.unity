@@ -2607,6 +2607,11 @@ MonoBehaviour:
   m_IgnoreFromBuild: 0
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!4 &681638645 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 285605019951423836, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+  m_PrefabInstance: {fileID: 1178780447}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &689354562
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3705,6 +3710,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 713822037381369479, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 713822037381369479, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 558078977}
@@ -3716,6 +3725,10 @@ PrefabInstance:
       propertyPath: bomb
       value: 
       objectReference: {fileID: 7191237824088780921, guid: 441d7d44d7e06ef47add36b3faf1ee3a, type: 3}
+    - target: {fileID: 2615983890377418500, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+      propertyPath: attackPoint
+      value: 
+      objectReference: {fileID: 681638645}
     - target: {fileID: 2615983890377418500, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
       propertyPath: playerCamera
       value: 
