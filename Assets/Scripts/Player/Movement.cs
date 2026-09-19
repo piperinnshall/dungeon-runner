@@ -199,10 +199,12 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // Get input from player
         inputHorizontal = Input.GetAxis("Horizontal");
         inputVertical = Input.GetAxis("Vertical");
         inputJump = Input.GetAxis("Jump") == 1f;
 
+        // State machine
         currentState = currentState switch
         {
             Idle => HandleIdle(),
@@ -214,6 +216,7 @@ public class Movement : MonoBehaviour
             _ => currentState
         };
 
+        // Bomb controls
         if(Input.GetKeyDown(KeyCode.E) && bomb != null)
         {
             currentBomb = Instantiate(bomb.gameObject, transform.position + transform.forward * 1.5f, Quaternion.identity);
@@ -231,12 +234,10 @@ public class Movement : MonoBehaviour
     // Calculate the movement vector based on input and current state, horizontal movement based on camera direction
     Vector3 GetMovement()
     {
-
         float directionX = inputHorizontal * velocity * Time.deltaTime;
         float directionZ = inputVertical * velocity * Time.deltaTime;
         float directionY;
 
-        
         Vector3 forward = playerCamera.forward;
         Vector3 right = playerCamera.right;
 
