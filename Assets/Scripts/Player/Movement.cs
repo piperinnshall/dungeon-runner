@@ -37,6 +37,8 @@ public class Movement : MonoBehaviour
     // Max time the player can stay in the air while jumping, after this time the player will start falling
     float jumpTime = 0.7f;
 
+    bool canMove = true;
+
     // Time Player has to wait until they can attack again
     float attackCoolldown = 0.5f;
     // Variable for storing attack time
@@ -70,7 +72,7 @@ public class Movement : MonoBehaviour
     public PlayerState HandleIdle()
     {
         // Play idle animation
-
+        canMove = true;
         Debug.Log("Player is idle");
         if (cc.isGrounded && inputJump)
         {
@@ -100,7 +102,7 @@ public class Movement : MonoBehaviour
     public PlayerState HandleFall()
     {
         // Play falling animation
-        
+        canMove = true;
         Debug.Log("Player is falling");
         if (cc.isGrounded)
         {
@@ -112,6 +114,7 @@ public class Movement : MonoBehaviour
 
     public PlayerState HandleMove()
     {
+        canMove = true;
         // Play moving animation
 
         if (!cc.isGrounded)
@@ -124,12 +127,23 @@ public class Movement : MonoBehaviour
         {
             return new Idle();
         }
+        else if (cc.isGrounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime)
+        {
+            attackStartTime = Time.time;
+            hasAttacked = false;
+            return new Attacking();
+        }
+        else if (cc.isGrounded && Input.GetMouseButton(1))
+        {
+            return new Blocking();
+        }
         Debug.Log("Player is moving");
         return currentState;
     }
 
     public PlayerState HandleJump()
     {
+        canMove = true;
         // Play jumping animation
 
         Debug.Log("Player is jumping");
@@ -146,6 +160,7 @@ public class Movement : MonoBehaviour
     {
         if (!hasAttacked)
         {
+            canMove = false;
             Attack();
             hasAttacked = true;
             Debug.Log("Player is attacking");
@@ -163,6 +178,7 @@ public class Movement : MonoBehaviour
 
     public PlayerState HandleBlock()
     {
+        canMove = false;
         // Play blocking animation
         Debug.Log("Player is blocking");
         StartBlocking();
@@ -204,9 +220,12 @@ public class Movement : MonoBehaviour
             currentBomb.GetComponent<Bomb>().Ignite();
         }
 
-        // Get movement direction and then move the character controller 
-        Vector3 movement = GetMovement();
-        cc.Move(movement);
+        if (canMove)
+        {
+            // Get movement direction and then move the character controller 
+            Vector3 movement = GetMovement();
+            cc.Move(movement);
+        }
     }
 
     // Calculate the movement vector based on input and current state, horizontal movement based on camera direction
