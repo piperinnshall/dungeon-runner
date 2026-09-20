@@ -1,7 +1,9 @@
 using NUnit.Framework.Interfaces;
+using System;
 using System.ComponentModel;
 using System.Reflection.Metadata.Ecma335;
 using Unity.AI.Navigation.LowLevel;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -44,7 +46,7 @@ public class Movement : MonoBehaviour
     // Variable for storing attack time
     float nextAttackTime = 0f;
     // Amount of damage player does to enemies with melee attack
-    float damage = 1f;
+    int damage = 1;
     // How far the player's attack reaches
     float attackRange = 1.5f;
     // Time when the player started attacking, used to determine when to stop attacking
@@ -55,9 +57,6 @@ public class Movement : MonoBehaviour
     bool hasAttacked;
     // Is the player blocking?
     public bool isBlocking = false;
-    // Layer(s) that enemies are on, this is for collision so that attacks can land
-    public LayerMask enemyLayers;
-
 
     [SerializeField] Bomb bomb;
     private GameObject currentBomb;
@@ -287,14 +286,18 @@ public class Movement : MonoBehaviour
 
     void Attack()
     {
-        // Enemies in range of attack
-        Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
+        // Detect enemies in range of attack
+        Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange);
 
-        // Damage enemies
+        // For each enemy hit, apply damage
         foreach (Collider enemy in hitEnemies)
         {
-            // EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
-            // enemyHealth.takeDamage(attackDamage);
+            EnemyHealth enemyHealth = enemy.GetComponentInParent<EnemyHealth>();
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(damage, transform.position);
+                Debug.Log("Enemy Health: " + enemyHealth.health);
+            }
         }
     }
 
