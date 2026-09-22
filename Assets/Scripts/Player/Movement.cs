@@ -61,7 +61,7 @@ public class Movement : MonoBehaviour
     [SerializeField] Bomb bomb;
     private GameObject currentBomb;
 
-    public Animator animator;
+    public Animator _animator;
     public Transform playerCamera;
     public Transform attackPoint;
     CharacterController cc;
@@ -70,7 +70,9 @@ public class Movement : MonoBehaviour
 
     public PlayerState HandleIdle()
     {
-        // Play idle animation
+
+        //animator.Play("Idle");
+
         canMove = true;
         Debug.Log("Player is idle");
         if (cc.isGrounded && inputJump)
@@ -114,7 +116,8 @@ public class Movement : MonoBehaviour
     public PlayerState HandleMove()
     {
         canMove = true;
-        // Play moving animation
+
+        //animator.Play("Move");
 
         if (!cc.isGrounded)
         {
@@ -192,7 +195,7 @@ public class Movement : MonoBehaviour
     void Start()
     {
         cc = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -221,13 +224,28 @@ public class Movement : MonoBehaviour
             currentBomb = Instantiate(bomb.gameObject, transform.position + transform.forward * 1.5f, Quaternion.identity);
             currentBomb.GetComponent<Bomb>().Ignite();
         }
-
+        // Get movement direction and then move the character controller 
+        Vector3 movement = GetMovement();
         if (canMove)
         {
-            // Get movement direction and then move the character controller 
-            Vector3 movement = GetMovement();
             cc.Move(movement);
         }
+
+        bool isGrounded = cc.isGrounded;
+        _animator.SetBool("IsGrounded", isGrounded);
+
+        if(inputJump && isGrounded)
+        {
+            _animator.SetTrigger("Jump");
+        }
+
+        // Calculate forward direction value for animation
+        float forwardValue = Vector3.Dot(transform.forward, movement.normalized);
+        _animator.SetFloat("Forward", forwardValue);
+
+        // Calculate upward direction value for animation
+        float upwardValue = Vector3.Dot(transform.up, movement.normalized);
+        _animator.SetFloat("Upward", upwardValue);
     }
 
     // Calculate the movement vector based on input and current state, horizontal movement based on camera direction
