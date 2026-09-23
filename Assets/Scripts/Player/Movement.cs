@@ -74,7 +74,7 @@ public class Movement : MonoBehaviour
         //animator.Play("Idle");
 
         canMove = true;
-        Debug.Log("Player is idle");
+        //Debug.Log("Player is idle");
         if (cc.isGrounded && inputJump)
         {
             return new Jumping();
@@ -104,7 +104,7 @@ public class Movement : MonoBehaviour
     {
         // Play falling animation
         canMove = true;
-        Debug.Log("Player is falling");
+        //Debug.Log("Player is falling");
         if (cc.isGrounded)
         {
             verticalVelocity = 0f;
@@ -139,7 +139,7 @@ public class Movement : MonoBehaviour
         {
             return new Blocking();
         }
-        Debug.Log("Player is moving");
+        //Debug.Log("Player is moving");
         return currentState;
     }
 
@@ -148,7 +148,7 @@ public class Movement : MonoBehaviour
         canMove = true;
         // Play jumping animation
 
-        Debug.Log("Player is jumping");
+        //Debug.Log("Player is jumping");
         jumpElapsedTime += Time.deltaTime;
         if (jumpElapsedTime >= jumpTime)
         {
@@ -165,7 +165,7 @@ public class Movement : MonoBehaviour
             canMove = false;
             Attack();
             hasAttacked = true;
-            Debug.Log("Player is attacking");
+            //Debug.Log("Player is attacking");
             // Play attack animation
             nextAttackTime = Time.time + attackCoolldown;
         }
@@ -182,7 +182,7 @@ public class Movement : MonoBehaviour
     {
         canMove = false;
         // Play blocking animation
-        Debug.Log("Player is blocking");
+        //Debug.Log("Player is blocking");
         StartBlocking();
         if (Input.GetMouseButton(1) == false)
         {
@@ -233,8 +233,10 @@ public class Movement : MonoBehaviour
 
         bool isGrounded = cc.isGrounded;
         _animator.SetBool("IsGrounded", isGrounded);
+        Debug.Log(isGrounded);
 
-        if(inputJump && isGrounded)
+        //Debug.Log(inputJump);
+        if (inputJump && isGrounded)
         {
             _animator.SetTrigger("Jump");
         }
@@ -314,7 +316,7 @@ public class Movement : MonoBehaviour
             if (enemyHealth != null)
             {
                 enemyHealth.TakeDamage(damage, transform.position);
-                Debug.Log("Enemy Health: " + enemyHealth.health);
+                //Debug.Log("Enemy Health: " + enemyHealth.health);
             }
         }
     }

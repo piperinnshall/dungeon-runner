@@ -541,6 +541,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 5692116262577274469}
     - target: {fileID: 2615983890377418500, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+      propertyPath: _animator
+      value: 
+      objectReference: {fileID: 5692116262577274469}
+    - target: {fileID: 2615983890377418500, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
       propertyPath: attackPoint
       value: 
       objectReference: {fileID: 5692116262577274468}
