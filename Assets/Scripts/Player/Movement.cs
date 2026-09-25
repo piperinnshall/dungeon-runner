@@ -146,7 +146,7 @@ public class Movement : MonoBehaviour
     public PlayerState HandleJump()
     {
         canMove = true;
-        // Play jumping animation
+        _animator.SetTrigger("JumpTrigger");
 
         //Debug.Log("Player is jumping");
         jumpElapsedTime += Time.deltaTime;
@@ -224,6 +224,10 @@ public class Movement : MonoBehaviour
             currentBomb = Instantiate(bomb.gameObject, transform.position + transform.forward * 1.5f, Quaternion.identity);
             currentBomb.GetComponent<Bomb>().Ignite();
         }
+
+        bool isGrounded = cc.isGrounded;
+        _animator.SetBool("IsGrounded", isGrounded);
+
         // Get movement direction and then move the character controller 
         Vector3 movement = GetMovement();
         if (canMove)
@@ -231,15 +235,7 @@ public class Movement : MonoBehaviour
             cc.Move(movement);
         }
 
-        bool isGrounded = cc.isGrounded;
-        _animator.SetBool("IsGrounded", isGrounded);
-        Debug.Log(isGrounded);
-
-        //Debug.Log(inputJump);
-        if (inputJump && isGrounded)
-        {
-            _animator.SetTrigger("Jump");
-        }
+        
 
         // Calculate forward direction value for animation
         float forwardValue = Vector3.Dot(transform.forward, movement.normalized);
