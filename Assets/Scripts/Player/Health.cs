@@ -9,10 +9,14 @@ public class Health : MonoBehaviour
     public Boolean isDead = false;
 
     [SerializeField] Movement moveScript;
+
+    public Animator _animator;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         health = maxHealth;
+        _animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -41,8 +45,10 @@ public class Health : MonoBehaviour
             }
         }
 
+        
         // Apply Damage
         health -= amount;
+        _animator.SetTrigger("HitTrigger");
         if (health <= 0)
         {
             Die();

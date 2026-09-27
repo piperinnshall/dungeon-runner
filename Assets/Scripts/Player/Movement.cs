@@ -52,7 +52,7 @@ public class Movement : MonoBehaviour
     // Time when the player started attacking, used to determine when to stop attacking
     float attackStartTime = 0f;
     // Duration of the attack animation in seconds
-    float attackDuration = 0.5f; 
+    float attackDuration; 
     // Ensure Attack() is only called once per attack window
     bool hasAttacked;
     // Is the player blocking?
@@ -71,7 +71,7 @@ public class Movement : MonoBehaviour
     public PlayerState HandleIdle()
     {
 
-        //animator.Play("Idle");
+        _animator.SetBool("IsBlocking", false);
 
         canMove = true;
         //Debug.Log("Player is idle");
@@ -160,12 +160,14 @@ public class Movement : MonoBehaviour
 
     public PlayerState HandleAttack()
     {
+        _animator.SetTrigger("AttackTrigger");
+        attackDuration = _animator.GetCurrentAnimatorStateInfo(0).length;
         if (!hasAttacked)
         {
             canMove = false;
             Attack();
             hasAttacked = true;
-            //Debug.Log("Player is attacking");
+            Debug.Log("Player is attacking");
             // Play attack animation
             nextAttackTime = Time.time + attackCoolldown;
         }
@@ -234,8 +236,6 @@ public class Movement : MonoBehaviour
         {
             cc.Move(movement);
         }
-
-        
 
         // Calculate forward direction value for animation
         float forwardValue = Vector3.Dot(transform.forward, movement.normalized);
@@ -320,6 +320,7 @@ public class Movement : MonoBehaviour
     void StartBlocking()
     {
         isBlocking = true;
+        _animator.SetBool("IsBlocking", true);
     }
 
 }
