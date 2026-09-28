@@ -325,7 +325,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4736324839012614138}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a44b30a51491dcf418b3f60835afe199, type: 3}
   m_Name: 
@@ -354,6 +354,8 @@ MonoBehaviour:
   maxHealth: 5
   health: 0
   isDead: 0
+  moveScript: {fileID: 2615983890377418500}
+  _animator: {fileID: 1676543294204358583}
 --- !u!114 &2615983890377418500
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -366,8 +368,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6db2c72d860ea8145a55e9a2ec0a206a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement
-  animator: {fileID: 0}
+  inputBlock: 0
+  isBlocking: 0
+  bomb: {fileID: 0}
+  _animator: {fileID: 1676543294204358583}
   playerCamera: {fileID: 0}
+  attackPoint: {fileID: 285605019951423836}
 --- !u!1 &6235477319947844705
 GameObject:
   m_ObjectHideFlags: 0

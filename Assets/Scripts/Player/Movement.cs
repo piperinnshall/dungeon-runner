@@ -1,7 +1,9 @@
 using NUnit.Framework.Interfaces;
+using System;
 using System.ComponentModel;
 using System.Reflection.Metadata.Ecma335;
 using Unity.AI.Navigation.LowLevel;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -44,25 +46,22 @@ public class Movement : MonoBehaviour
     // Variable for storing attack time
     float nextAttackTime = 0f;
     // Amount of damage player does to enemies with melee attack
-    float damage = 1f;
+    int damage = 1;
     // How far the player's attack reaches
     float attackRange = 1.5f;
     // Time when the player started attacking, used to determine when to stop attacking
     float attackStartTime = 0f;
     // Duration of the attack animation in seconds
-    float attackDuration = 0.5f; 
+    float attackDuration; 
     // Ensure Attack() is only called once per attack window
     bool hasAttacked;
     // Is the player blocking?
     public bool isBlocking = false;
-    // Layer(s) that enemies are on, this is for collision so that attacks can land
-    public LayerMask enemyLayers;
-
 
     [SerializeField] Bomb bomb;
     private GameObject currentBomb;
 
-    public Animator animator;
+    public Animator _animator;
     public Transform playerCamera;
     public Transform attackPoint;
     CharacterController cc;
@@ -71,9 +70,11 @@ public class Movement : MonoBehaviour
 
     public PlayerState HandleIdle()
     {
-        // Play idle animation
+
+        _animator.SetBool("IsBlocking", false);
+
         canMove = true;
-        Debug.Log("Player is idle");
+        //Debug.Log("Player is idle");
         if (cc.isGrounded && inputJump)
         {
             return new Jumping();
@@ -103,7 +104,7 @@ public class Movement : MonoBehaviour
     {
         // Play falling animation
         canMove = true;
-        Debug.Log("Player is falling");
+        //Debug.Log("Player is falling");
         if (cc.isGrounded)
         {
             verticalVelocity = 0f;
@@ -115,7 +116,8 @@ public class Movement : MonoBehaviour
     public PlayerState HandleMove()
     {
         canMove = true;
-        // Play moving animation
+
+        //animator.Play("Move");
 
         if (!cc.isGrounded)
         {
@@ -137,16 +139,16 @@ public class Movement : MonoBehaviour
         {
             return new Blocking();
         }
-        Debug.Log("Player is moving");
+        //Debug.Log("Player is moving");
         return currentState;
     }
 
     public PlayerState HandleJump()
     {
         canMove = true;
-        // Play jumping animation
+        _animator.SetTrigger("JumpTrigger");
 
-        Debug.Log("Player is jumping");
+        //Debug.Log("Player is jumping");
         jumpElapsedTime += Time.deltaTime;
         if (jumpElapsedTime >= jumpTime)
         {
@@ -158,6 +160,8 @@ public class Movement : MonoBehaviour
 
     public PlayerState HandleAttack()
     {
+        _animator.SetTrigger("AttackTrigger");
+        attackDuration = _animator.GetCurrentAnimatorStateInfo(0).length;
         if (!hasAttacked)
         {
             canMove = false;
@@ -180,7 +184,7 @@ public class Movement : MonoBehaviour
     {
         canMove = false;
         // Play blocking animation
-        Debug.Log("Player is blocking");
+        //Debug.Log("Player is blocking");
         StartBlocking();
         if (Input.GetMouseButton(1) == false)
         {
@@ -193,7 +197,7 @@ public class Movement : MonoBehaviour
     void Start()
     {
         cc = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -223,12 +227,23 @@ public class Movement : MonoBehaviour
             currentBomb.GetComponent<Bomb>().Ignite();
         }
 
+        bool isGrounded = cc.isGrounded;
+        _animator.SetBool("IsGrounded", isGrounded);
+
+        // Get movement direction and then move the character controller 
+        Vector3 movement = GetMovement();
         if (canMove)
         {
-            // Get movement direction and then move the character controller 
-            Vector3 movement = GetMovement();
             cc.Move(movement);
         }
+
+        // Calculate forward direction value for animation
+        float forwardValue = Vector3.Dot(transform.forward, movement.normalized);
+        _animator.SetFloat("Forward", forwardValue);
+
+        // Calculate upward direction value for animation
+        float upwardValue = Vector3.Dot(transform.up, movement.normalized);
+        _animator.SetFloat("Upward", upwardValue);
     }
 
     // Calculate the movement vector based on input and current state, horizontal movement based on camera direction
@@ -287,20 +302,25 @@ public class Movement : MonoBehaviour
 
     void Attack()
     {
-        // Enemies in range of attack
-        Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange, enemyLayers);
+        // Detect enemies in range of attack
+        Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange);
 
-        // Damage enemies
+        // For each enemy hit, apply damage
         foreach (Collider enemy in hitEnemies)
         {
-            // EnemyHealth enemyHealth = enemy.GetComponent<EnemyHealth>();
-            // enemyHealth.takeDamage(attackDamage);
+            EnemyHealth enemyHealth = enemy.GetComponentInParent<EnemyHealth>();
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(damage, transform.position);
+                //Debug.Log("Enemy Health: " + enemyHealth.health);
+            }
         }
     }
 
     void StartBlocking()
     {
         isBlocking = true;
+        _animator.SetBool("IsBlocking", true);
     }
 
 }

@@ -2607,6 +2607,17 @@ MonoBehaviour:
   m_IgnoreFromBuild: 0
   m_ApplyToChildren: 1
   m_AffectedAgents: ffffffff
+--- !u!114 &653617421 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2615983890377418500, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+  m_PrefabInstance: {fileID: 1178780447}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6db2c72d860ea8145a55e9a2ec0a206a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Movement
 --- !u!4 &681638645 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 285605019951423836, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
@@ -3733,6 +3744,10 @@ PrefabInstance:
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 558078977}
+    - target: {fileID: 2615983890377418500, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+      propertyPath: enemyLayers.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6235477319947844705, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
       propertyPath: m_Name
       value: PlayerMain
@@ -3781,6 +3796,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8816050790027676013, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+      propertyPath: moveScript
+      value: 
+      objectReference: {fileID: 653617421}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
