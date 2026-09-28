@@ -161,7 +161,8 @@ public class Movement : MonoBehaviour
     public PlayerState HandleAttack()
     {
         _animator.SetTrigger("AttackTrigger");
-        attackDuration = _animator.GetCurrentAnimatorStateInfo(0).length;
+        //attackDuration = _animator.GetCurrentAnimatorStateInfo(0).length;
+        attackDuration = 0.1f;
         if (!hasAttacked)
         {
             canMove = false;
