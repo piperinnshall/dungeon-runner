@@ -74,7 +74,7 @@ public class Movement : MonoBehaviour
         _animator.SetBool("IsBlocking", false);
 
         canMove = true;
-        //Debug.Log("Player is idle");
+        Debug.Log("Player is idle");
         if (cc.isGrounded && inputJump)
         {
             return new Jumping();
@@ -161,8 +161,8 @@ public class Movement : MonoBehaviour
     public PlayerState HandleAttack()
     {
         _animator.SetTrigger("AttackTrigger");
-        //attackDuration = _animator.GetCurrentAnimatorStateInfo(0).length;
-        attackDuration = 0.1f;
+        attackDuration = 1f;
+        _animator.SetBool("Attacked", hasAttacked);
         if (!hasAttacked)
         {
             canMove = false;
