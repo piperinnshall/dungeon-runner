@@ -45,7 +45,7 @@ public class Health : MonoBehaviour
             }
         }
 
-        
+        moveScript.canMove = false;
         // Apply Damage
         health -= amount;
         _animator.SetTrigger("HitTrigger");

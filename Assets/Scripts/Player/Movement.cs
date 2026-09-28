@@ -39,7 +39,7 @@ public class Movement : MonoBehaviour
     // Max time the player can stay in the air while jumping, after this time the player will start falling
     float jumpTime = 0.7f;
 
-    bool canMove = true;
+    public bool canMove = true;
 
     // Time Player has to wait until they can attack again
     float attackCoolldown = 0.5f;
