@@ -47,10 +47,10 @@ public class Equipment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Right Hand: " + rightHand.position);
-        Debug.Log("Left Hand: " + leftHand.position);
-        Debug.Log("Right Hand rotation: " + rightHand.rotation);
-        Debug.Log("Left Hand rotation: " + leftHand.rotation);
+        //Debug.Log("Right Hand: " + rightHand.position);
+        //Debug.Log("Left Hand: " + leftHand.position);
+        //Debug.Log("Right Hand rotation: " + rightHand.rotation);
+        //Debug.Log("Left Hand rotation: " + leftHand.rotation);
     }
 
     public void EquipRightHand(GameObject equipment)
@@ -67,7 +67,7 @@ public class Equipment : MonoBehaviour
 
         equippedRightHand.transform.localPosition = swordPositionOffset;
         equippedRightHand.transform.localEulerAngles = swordRotationOffset;
-        equippedRightHand.transform.localScale = swordScale; // Reset scale to 1,1,1
+        equippedRightHand.transform.localScale = swordScale;
     }
 
     public void EquipLeftHand(GameObject equipment)
@@ -84,7 +84,7 @@ public class Equipment : MonoBehaviour
 
         equippedLeftHand.transform.localPosition = shieldPositionOffset;
         equippedLeftHand.transform.localEulerAngles = shieldRotationOffset;
-        equippedLeftHand.transform.localScale = shieldScale; // Reset scale to 1,1,1
+        equippedLeftHand.transform.localScale = shieldScale;
     }
 }
 
