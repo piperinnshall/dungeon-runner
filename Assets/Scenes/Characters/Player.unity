@@ -815,12 +815,12 @@ MonoBehaviour:
   _animator: {fileID: 5692116262577274469}
   Sword: {fileID: 1677638261}
   Shield: {fileID: 851330444}
-  swordPositionOffset: {x: 0, y: 0, z: 0}
-  swordRotationOffset: {x: 0, y: 0, z: 0}
-  shieldPositionOffset: {x: 0, y: 0, z: 0}
-  shieldRotationOffset: {x: 0, y: 0, z: 0}
-  swordScale: {x: 0.02, y: 0.02, z: 0.02}
-  shieldScale: {x: 0.02, y: 0.02, z: 0.02}
+  swordPositionOffset: {x: 0, y: 0.001, z: 0}
+  swordRotationOffset: {x: -50, y: -100, z: 0}
+  shieldPositionOffset: {x: 0.001, y: 0, z: 0}
+  shieldRotationOffset: {x: 0, y: 180, z: 100}
+  swordScale: {x: 0.01, y: 0.01, z: 0.01}
+  shieldScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
