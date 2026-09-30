@@ -75,8 +75,6 @@ public class Combat : MonoBehaviour
             if (enemyHealth != null)
             {
                 enemyHealth.TakeDamage(attackDamage, transform.position);
-
-                Debug.Log("Skeleton Health: " + enemyHealth.health);
             }
         }
 
@@ -144,6 +142,7 @@ public class Combat : MonoBehaviour
     {
         if (attackPoint != null)
         {
+            Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(attackPoint.position, attackRange);
         }
     }

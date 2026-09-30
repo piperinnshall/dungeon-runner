@@ -1,29 +1,29 @@
 using UnityEngine;
 
-public class Skeleton_AttackState : MonoBehaviour
+public class Goblin_AttackState : MonoBehaviour
 {
-    private Skeleton_Behaviour skeleton;
+    private Goblin_Behaviour Goblin;
 
     private Transform player;
     private Combat playerCombat;
-    private Collider skeletonCollider;
+    private Collider GoblinCollider;
     private Collider playerCollider;
     private Health playerHealth;
     private Animator animator;
 
     public float attackDistance = 1.5f;
-    public float attackCooldown = 1.2f; //animation duration is 0.66 seconds trust
+    public float attackCooldown = 3.2f; //animation duration is 0.66 seconds trust
 
     private bool attacking = false;
     private float attackTimer = 0f;
 
     void Start()
     {
-        skeleton = GetComponent<Skeleton_Behaviour>();
+        Goblin = GetComponent<Goblin_Behaviour>();
 
         animator = GetComponent<Animator>();
 
-        skeletonCollider = GetComponentInChildren<Collider>();
+        GoblinCollider = GetComponentInChildren<Collider>();
 
         GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
 
@@ -44,18 +44,18 @@ public class Skeleton_AttackState : MonoBehaviour
     {
         if (player == null)
         {
-            skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Patrol);
+            Goblin.ChangeState(Goblin_Behaviour.GoblinState.Patrol);
             return;
         }
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
         // Player left the chase radius
-        if (distanceToPlayer > skeleton.chaseRadius)
+        if (distanceToPlayer > Goblin.chaseRadius)
         {
             attacking = false;
             attackTimer = 0f;
-            skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Patrol);
+            Goblin.ChangeState(Goblin_Behaviour.GoblinState.Patrol);
             return;
         }
 
@@ -64,7 +64,7 @@ public class Skeleton_AttackState : MonoBehaviour
         {
             attacking = false;
             attackTimer = 0f;
-            skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Chase);
+            Goblin.ChangeState(Goblin_Behaviour.GoblinState.Chase);
             return;
         }
 
@@ -94,7 +94,7 @@ public class Skeleton_AttackState : MonoBehaviour
 
         if (animator != null)
         {
-            animator.Play("1HandedAttack1", 0, 0f);
+            animator.Play("attack2ForwardDaggers", 0, 0f);
         }
 
         if (playerHealth != null)
@@ -125,15 +125,15 @@ public class Skeleton_AttackState : MonoBehaviour
 
     float GetColliderDistance()
     {
-        if (skeletonCollider == null || playerCollider == null)
+        if (GoblinCollider == null || playerCollider == null)
         {
             return Vector3.Distance(transform.position, player.position);
         }
 
-        Vector3 skeletonPoint = skeletonCollider.ClosestPoint(playerCollider.transform.position);
+        Vector3 GoblinPoint = GoblinCollider.ClosestPoint(playerCollider.transform.position);
 
-        Vector3 playerPoint = playerCollider.ClosestPoint(skeletonPoint);
+        Vector3 playerPoint = playerCollider.ClosestPoint(GoblinPoint);
 
-        return Vector3.Distance(skeletonPoint, playerPoint);
+        return Vector3.Distance(GoblinPoint, playerPoint);
     }
 }

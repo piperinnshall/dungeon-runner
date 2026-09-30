@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour
+public class SkeletonHealth : MonoBehaviour, EnemyHealth
 {
     public int maxHealth = 2;
     public int health;
@@ -23,7 +23,7 @@ public class EnemyHealth : MonoBehaviour
         if (isDead) {  return; }
 
         health -= amount;
-
+        animator.Play("1HandedgetHit");
         Debug.Log("Skeleton Health: " + health);
 
         if (health <= 0)
