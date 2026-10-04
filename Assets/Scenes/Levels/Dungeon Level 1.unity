@@ -1119,7 +1119,7 @@ GameObject:
   - component: {fileID: 311799338}
   - component: {fileID: 311799337}
   - component: {fileID: 311799336}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2391,6 +2391,14 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: c3c671fb2dd2f9245a2f778cdecfacc4, type: 2}
+    - target: {fileID: -5870630636663241102, guid: 7bae95d5232586546a1414da4b79c142, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -2109283612857434532, guid: 7bae95d5232586546a1414da4b79c142, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: -1990968323811559735, guid: 7bae95d5232586546a1414da4b79c142, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -2407,10 +2415,18 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
       objectReference: {fileID: 2100000, guid: c3c671fb2dd2f9245a2f778cdecfacc4, type: 2}
+    - target: {fileID: 4280968077812995601, guid: 7bae95d5232586546a1414da4b79c142, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 6036870375987055282, guid: 7bae95d5232586546a1414da4b79c142, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: a4f980364728dea40983eab248fbf4e2, type: 2}
+    - target: {fileID: 7149010353073452704, guid: 7bae95d5232586546a1414da4b79c142, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: -7943923520842021533, guid: 3a04021cb84ec4d4e9e95f6f24e5d863, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
