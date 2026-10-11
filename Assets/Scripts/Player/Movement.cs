@@ -161,12 +161,12 @@ public class Movement : MonoBehaviour
     public PlayerState HandleAttack()
     {
         _animator.SetTrigger("AttackTrigger");
-        attackDuration = 1f;
+        attackDuration = 0.8f;
         _animator.SetBool("Attacked", hasAttacked);
         if (!hasAttacked)
         {
             canMove = false;
-            Attack();
+            Invoke(nameof(Attack), 19f);
             hasAttacked = true;
             //Debug.Log("Player is attacking");
             // Play attack animation
@@ -323,5 +323,4 @@ public class Movement : MonoBehaviour
         isBlocking = true;
         _animator.SetBool("IsBlocking", true);
     }
-
 }
