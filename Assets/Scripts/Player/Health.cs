@@ -48,7 +48,7 @@ public class Health : MonoBehaviour
         moveScript.canMove = false;
         // Apply Damage
         health -= amount;
-        Invoke(nameof(CanMoveAgain), 0.1f);
+        Invoke(nameof(CanMoveAgain), 0.05f);
         _animator.SetTrigger("HitTrigger");
         if (health <= 0)
         {
