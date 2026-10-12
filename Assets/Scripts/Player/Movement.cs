@@ -70,9 +70,6 @@ public class Movement : MonoBehaviour
 
     public PlayerState HandleIdle()
     {
-
-        _animator.SetBool("IsBlocking", false);
-
         canMove = true;
         //Debug.Log("Player is idle");
         if (cc.isGrounded && inputJump)
@@ -166,7 +163,7 @@ public class Movement : MonoBehaviour
         if (!hasAttacked)
         {
             canMove = false;
-            Invoke(nameof(Attack), 19f);
+            Invoke(nameof(Attack), 0.4f);
             hasAttacked = true;
             //Debug.Log("Player is attacking");
             // Play attack animation
@@ -189,6 +186,7 @@ public class Movement : MonoBehaviour
         StartBlocking();
         if (Input.GetMouseButton(1) == false)
         {
+            StopBlocking();
             return new Idle();
         }
         return currentState;
@@ -322,5 +320,11 @@ public class Movement : MonoBehaviour
     {
         isBlocking = true;
         _animator.SetBool("IsBlocking", true);
+    }
+
+    void StopBlocking()
+    {
+        isBlocking = false;
+        _animator.SetBool("IsBlocking", false);
     }
 }
