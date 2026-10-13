@@ -24,7 +24,7 @@ public class GameManager {
 
   private IState Loading(IState to) {
     SceneManager.sceneLoaded += OnWorldLoaded;
-    SceneManager.LoadSceneAsync("SampleScene");
+    SceneManager.LoadSceneAsync("Dungeon Level 1");
     return to;
   }
 
