@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 /*
@@ -30,6 +31,7 @@ public class CameraController : MonoBehaviour
 
     [SerializeField] float collisionOffset = 0.2f; // Offset to prevent camera from clipping into objects
     [SerializeField] LayerMask collisionMask; // Layer mask for objects that the camera can collide with
+    [SerializeField] float collisionRadius = 0.3f; // Radius of the sphere cast for collision detection
 
     [SerializeField] float defaultFOV = 60f; // Default field of view for the camera
     [SerializeField] float topDownFOV = 70f; // Field of view when the camera is looking directly down
@@ -94,28 +96,33 @@ public class CameraController : MonoBehaviour
 
     void HandleCameraCollision()
     {
+        Vector3 origin = transform.position;
+
         // Calculate the desired position of the camera based on its local position
         Vector3 desiredPosition = transform.TransformPoint(desiredLocalPosition);
 
-        // Project the raycast onto the same vertical plane as the desired position so collisions
-        // are checked horizontally and the camera won't be pushed up/down.
-        Vector3 origin = new Vector3(transform.position.x, desiredPosition.y, transform.position.z);
-        Vector3 target = new Vector3(desiredPosition.x, desiredPosition.y, desiredPosition.z);
+        Vector3 direction = desiredPosition - origin;
+
+        float distance = direction.magnitude;
+
+        // Project the raycast between player and camera to check for collisions
+        Vector3 targetPosition = desiredPosition;
 
         RaycastHit hit;
-        if (Physics.Linecast(origin, target, out hit, collisionMask))
+        if (Physics.SphereCast(origin, collisionRadius, direction.normalized, out hit, distance, collisionMask, QueryTriggerInteraction.Ignore))
         {
-            // If there's a collision, move the camera to the hit point minus an offset,
-            // but keep the camera at the desired vertical (Y) position so it doesn't move up/down.
-            Vector3 corrected = hit.point - transform.forward * collisionOffset;
-            corrected.y = desiredPosition.y;
-            cameraTransform.position = corrected;
+            float safeDistance = Mathf.Max(0.1f, hit.distance - collisionOffset);
+
+            targetPosition = origin + direction.normalized * safeDistance;
         }
-        else
-        {
-            // If there's no collision, move the camera to its desired position
-            cameraTransform.localPosition = desiredLocalPosition;
-        }
+
+        // Keep the camera at the same height as the desired position
+        targetPosition.y = desiredPosition.y;
+
+        // Smoothly move the camera to the target position
+        Vector3 targetLocalPosition = transform.InverseTransformPoint(targetPosition);
+
+        cameraTransform.localPosition = Vector3.Lerp(cameraTransform.localPosition, targetLocalPosition, Time.deltaTime * 10f);
     }
 
     // Zoom out when camera is looking directly down for a bird's eye view
