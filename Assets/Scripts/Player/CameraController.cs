@@ -54,7 +54,7 @@ public class CameraController : MonoBehaviour
         // Store the initial desired position of the camera
         desiredLocalPosition = cameraTransform.localPosition;
 
-        offsetDistanceY = transform.position.y;
+        offsetDistanceY = transform.position.y - player.position.y;
 
         // Lock and hide cursor with option isn't checked
         if ( ! clickToMoveCamera )
