@@ -54,7 +54,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 28c12352733b19248913bf865d76d9ba, type: 2}
     - target: {fileID: 919132149155446097, guid: b0ec1bd255905f1409c2d63b23d73697, type: 3}
       propertyPath: m_Name
-      value: Wall Torch
+      value: Wall Torch (Lit)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -62,13 +62,73 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: b0ec1bd255905f1409c2d63b23d73697, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4014726819922169277}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b0ec1bd255905f1409c2d63b23d73697, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7260758968639099537}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b0ec1bd255905f1409c2d63b23d73697, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4256255690024374521}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: b0ec1bd255905f1409c2d63b23d73697, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4385000951882840792}
   m_SourcePrefab: {fileID: 100100000, guid: b0ec1bd255905f1409c2d63b23d73697, type: 3}
 --- !u!4 &302479171321721663 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b0ec1bd255905f1409c2d63b23d73697, type: 3}
   m_PrefabInstance: {fileID: 268006274282067156}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1115009900161116549 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: b0ec1bd255905f1409c2d63b23d73697, type: 3}
+  m_PrefabInstance: {fileID: 268006274282067156}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &7260758968639099537
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115009900161116549}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.062116187, y: 0.023514185, z: 0.019979253}
+  m_Center: {x: 0.009181792, y: 0.0000000015423562, z: 0.0041938303}
+--- !u!114 &4256255690024374521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115009900161116549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 515d1aa94d399d343a96d970224cc91c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
+  torchLightRange: 1
+--- !u!114 &4385000951882840792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1115009900161116549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd22c7c6eabab4f4b8b96fb31de77993, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InteractableObject
 --- !u!1001 &9152470806653730563
 PrefabInstance:
   m_ObjectHideFlags: 0

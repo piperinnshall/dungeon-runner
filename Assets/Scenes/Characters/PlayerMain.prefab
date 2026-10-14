@@ -47,6 +47,7 @@ GameObject:
   - component: {fileID: 8816050790027676013}
   - component: {fileID: 2615983890377418500}
   - component: {fileID: 4987556203919058700}
+  - component: {fileID: 6287664101581765583}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -285,6 +286,18 @@ MonoBehaviour:
   shieldRotationOffset: {x: 0, y: 180, z: 100}
   swordScale: {x: 0.01, y: 0.01, z: 0.01}
   shieldScale: {x: 0.01, y: 0.01, z: 0.01}
+--- !u!114 &6287664101581765583
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4736324839012614138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b53a70d2c5c57c48bb1c6f83b5a647e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Interact
 --- !u!1 &6235477319947844705
 GameObject:
   m_ObjectHideFlags: 0
