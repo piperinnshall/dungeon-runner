@@ -14,12 +14,14 @@ public class Torch : MonoBehaviour
         interactableObject = GetComponent<InteractableObject>();
         ExtinguishTorch();
 
-        if(interactableObject != null)
+        // Subscribe to the OnInteractedWith event once
+        if (interactableObject != null)
         {
             interactableObject.OnInteractedWith += HandleInteraction;
         }
     }
 
+    // Unsubscribe from the event when the object is destroyed to prevent memory leaks
     void OnDestroy()
     {
         if (interactableObject != null)
@@ -36,16 +38,14 @@ public class Torch : MonoBehaviour
 
     public void HandleInteraction()
     {
-        if (interactableObject != null && interactableObject.gameObject == this.gameObject)
+        // Toggle the torch state when interacted with
+        if (isTorchLit)
         {
-            if (isTorchLit)
-            {
-                ExtinguishTorch();
-            }
-            else
-            {
-                LightTorch();
-            }
+            ExtinguishTorch();
+        }
+        else
+        {
+            LightTorch();
         }
     }
 
@@ -60,7 +60,6 @@ public class Torch : MonoBehaviour
     {
         isTorchLit = false;
         ParticleSystem flame = torchFlame.GetComponent<ParticleSystem>();
-        Debug.Log("Particle system name: " + flame.name);
         flame.Stop();
     }
 }
