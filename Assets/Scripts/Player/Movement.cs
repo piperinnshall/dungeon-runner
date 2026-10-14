@@ -220,7 +220,7 @@ public class Movement : MonoBehaviour
         };
 
         // Bomb controls
-        if(Input.GetKeyDown(KeyCode.E) && bomb != null)
+        if(Input.GetKeyDown(KeyCode.G) && bomb != null)
         {
             currentBomb = Instantiate(bomb.gameObject, transform.position + transform.forward * 1.5f, Quaternion.identity);
             currentBomb.GetComponent<Bomb>().Ignite();
