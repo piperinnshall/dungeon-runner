@@ -15,6 +15,7 @@ public record Jumping() : PlayerState;
 public record Falling() : PlayerState;
 public record Attacking() : PlayerState;
 public record Blocking() : PlayerState;
+public record Throwing() : PlayerState;
 
 
 public class Movement : MonoBehaviour
@@ -61,6 +62,9 @@ public class Movement : MonoBehaviour
     [SerializeField] Bomb bomb;
     private GameObject currentBomb;
 
+    private Equipment equipmentScript;
+    [SerializeField] BoomerangProjectile boomerang;
+
     public Animator _animator;
     public Transform playerCamera;
     public Transform attackPoint;
@@ -84,13 +88,16 @@ public class Movement : MonoBehaviour
         {
             return new Falling();
         }
-        else if (cc.isGrounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime)
+        else if (cc.isGrounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime && !equipmentScript.hasBoomerang)
         {
             attackStartTime = Time.time;
             hasAttacked = false;
             return new Attacking();
+        } else if (cc.isGrounded && Input.GetMouseButtonDown(0) && equipmentScript.hasBoomerang && !equipmentScript.hasSwordAndShield)
+        {
+            return new Throwing();
         }
-        else if (cc.isGrounded && Input.GetMouseButton(1))
+        else if (cc.isGrounded && Input.GetMouseButton(1) && !equipmentScript.hasBoomerang && equipmentScript.hasSwordAndShield)
         {
             return new Blocking();
         }
@@ -126,7 +133,7 @@ public class Movement : MonoBehaviour
         {
             return new Idle();
         }
-        else if (cc.isGrounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime)
+        else if (cc.isGrounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime && equipmentScript.hasSwordAndShield)
         {
             attackStartTime = Time.time;
             hasAttacked = false;
@@ -192,11 +199,22 @@ public class Movement : MonoBehaviour
         return currentState;
     }
 
+    public PlayerState HandleThrow()
+    {
+        canMove = false;
+        // Play throwing animation
+        //Debug.Log("Player is throwing");
+        _animator.SetTrigger("ThrowTrigger");
+        Instantiate(boomerang, transform.position + transform.right + transform.forward, Quaternion.identity);
+        return new Idle();
+    }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         cc = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
+        equipmentScript = GetComponent<Equipment>();
     }
 
     // Update is called once per frame
@@ -216,6 +234,7 @@ public class Movement : MonoBehaviour
             Blocking => HandleBlock(),
             Jumping => HandleJump(),
             Falling => HandleFall(),
+            Throwing => HandleThrow(),
             _ => currentState
         };
 
