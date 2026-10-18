@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -25,6 +26,43 @@ public class Door : MonoBehaviour
     [SerializeField] private float openDuration = 0.8f;
     [SerializeField] private KeyCode interactKey = KeyCode.F;
 
+    [Header("Locks (optional)")]
+    [Tooltip("LOCK 1: item name the player must have in their Inventory. Leave EMPTY (and Extra Locks empty) for a door with no lock.")]
+    [SerializeField] private string requiredKey = "";
+    [Tooltip("LOCK 1's model. It is hidden when this lock is opened. Optional.")]
+    [SerializeField] private GameObject lockObject;
+    [Tooltip("Need more than one key? Add extra locks here, each with its own key name and lock model. Leave empty for a single-lock door.")]
+    [SerializeField] private List<ExtraLock> extraLocks = new List<ExtraLock>();
+    [SerializeField] private string lockedMessage = "It's locked.";
+    [Tooltip("For double gates: the OTHER leaf. Once this door is fully unlocked, that one is unlocked too. Set it on both leaves.")]
+    [SerializeField] private Door linkedDoor;
+
+    [System.Serializable]
+    public class ExtraLock
+    {
+        public string requiredKey;
+        public GameObject lockObject;
+    }
+
+    // Runtime state of each lock on this door.
+    private class LockSlot
+    {
+        public string key;
+        public GameObject model;
+        public bool open;
+    }
+    private readonly List<LockSlot> locks = new List<LockSlot>();
+
+    private bool IsLocked
+    {
+        get
+        {
+            foreach (LockSlot slot in locks)
+                if (!slot.open) return true;
+            return false;
+        }
+    }
+
     private bool isOpen;
     private bool isMoving;
     private bool playerInRange;
@@ -38,6 +76,66 @@ public class Door : MonoBehaviour
 
         // Remember the closed pose so Close() returns to exactly this rotation.
         closedRotation = doorPivot.rotation;
+
+        // Build the list of locks. Lock 1 is the Required Key field, the rest come from Extra Locks.
+        // A lock with an empty key name is ignored, so no keys at all = a normal unlocked door.
+        AddLock(requiredKey, lockObject);
+        foreach (ExtraLock extra in extraLocks)
+            AddLock(extra.requiredKey, extra.lockObject);
+    }
+
+    private void AddLock(string key, GameObject model)
+    {
+        if (string.IsNullOrEmpty(key)) return;
+
+        locks.Add(new LockSlot { key = key, model = model, open = false });
+        if (model != null) model.SetActive(true);
+    }
+
+    // Tries every lock that is still closed against the player's Inventory. Each lock whose key
+    // the player holds opens and its model disappears. Returns true only when ALL locks are open.
+    private bool TryUnlock(Transform user)
+    {
+        Inventory inventory = user != null ? user.GetComponentInParent<Inventory>() : null;
+
+        List<string> missingKeys = new List<string>();
+        foreach (LockSlot slot in locks)
+        {
+            if (slot.open) continue;
+
+            if (inventory != null && inventory.HasItem(slot.key))
+            {
+                slot.open = true;
+                if (slot.model != null) slot.model.SetActive(false);
+            }
+            else
+            {
+                missingKeys.Add(slot.key);
+            }
+        }
+
+        if (missingKeys.Count == 0)
+        {
+            if (linkedDoor != null) linkedDoor.Unlock();
+            return true;
+        }
+
+        Debug.Log(lockedMessage + " " + missingKeys.Count + " lock(s) left (needs: " + string.Join(", ", missingKeys) + ")");
+        return false;
+    }
+
+    /// <summary>Opens every lock on this door, hides the lock models, and unlocks the linked leaf (if any).</summary>
+    public void Unlock()
+    {
+        if (!IsLocked) return; // also stops the two linked leaves calling each other forever
+
+        foreach (LockSlot slot in locks)
+        {
+            slot.open = true;
+            if (slot.model != null) slot.model.SetActive(false);
+        }
+
+        if (linkedDoor != null) linkedDoor.Unlock();
     }
 
     // NOTE: this uses Unity's classic Input class. If Unity throws an error about it, either set
@@ -59,6 +157,9 @@ public class Door : MonoBehaviour
     public void Toggle(Transform user)
     {
         if (isMoving) return;
+
+        // Locked doors only open once the player has every key (locks open one by one as keys are found).
+        if (IsLocked && !TryUnlock(user)) return;
 
         if (isOpen) Close();
         else Open(user);
