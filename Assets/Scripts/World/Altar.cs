@@ -3,7 +3,8 @@ using UnityEngine;
 /// <summary>
 /// An altar the player can light. When the player stands inside the altar's trigger zone and presses
 /// the interact key (E by default) the fire turns on. One use only.
-/// If a SlidingDoor is assigned, the door opens once ALL altars pointing at it are lit.
+/// Each SlidingDoor assigned (the "Door" field plus any "Extra Doors") opens once ALL altars pointing at it are lit.
+/// So one altar can open several doors, and one door can wait for several altars.
 ///
 /// Setup:
 ///   Altar (this script + BoxCollider with "Is Trigger" ticked, big enough to stand in front of)
@@ -20,6 +21,8 @@ public class Altar : MonoBehaviour
     [Header("Door")]
     [Tooltip("The SlidingDoor this altar helps to open. Leave empty for an altar that only lights a fire.")]
     [SerializeField] private SlidingDoor door;
+    [Tooltip("More doors this altar helps to open. Leave empty if it only has one door.")]
+    [SerializeField] private SlidingDoor[] extraDoors;
 
     [Header("Interaction")]
     [SerializeField] private KeyCode interactKey = KeyCode.E;
@@ -35,8 +38,10 @@ public class Altar : MonoBehaviour
         foreach (GameObject obj in lightUpObjects)
             if (obj != null) obj.SetActive(false);
 
-        // Tell the door this altar exists so it knows to wait for it.
+        // Tell each door this altar exists so it knows to wait for it.
         if (door != null) door.Register(this);
+        foreach (SlidingDoor extra in extraDoors)
+            if (extra != null) extra.Register(this);
     }
 
     // NOTE: this uses Unity's classic Input class. If Unity throws an error about it, set
@@ -56,6 +61,8 @@ public class Altar : MonoBehaviour
             if (obj != null) obj.SetActive(true);
 
         if (door != null) door.AltarLit(this);
+        foreach (SlidingDoor extra in extraDoors)
+            if (extra != null) extra.AltarLit(this);
     }
 
     private void OnTriggerEnter(Collider other)
