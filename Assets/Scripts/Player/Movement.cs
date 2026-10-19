@@ -64,6 +64,7 @@ public class Movement : MonoBehaviour
 
     private Equipment equipmentScript;
     [SerializeField] BoomerangProjectile boomerang;
+    // Has the player thrown the boomerang? Used to prevent multiple throws
     public bool thrownBoomerang = false;
     public Animator _animator;
     public Transform playerCamera;
@@ -93,7 +94,7 @@ public class Movement : MonoBehaviour
             attackStartTime = Time.time;
             hasAttacked = false;
             return new Attacking();
-        } else if (cc.isGrounded && Input.GetMouseButtonDown(0) && equipmentScript.hasBoomerang && !equipmentScript.hasSwordAndShield)
+        } else if (cc.isGrounded && Input.GetMouseButtonDown(0) && equipmentScript.hasBoomerang && thrownBoomerang == false)
         {
             return new Throwing();
         }
@@ -352,7 +353,8 @@ public class Movement : MonoBehaviour
     {
         thrownBoomerang = true;
         Vector3 spawnPosition = transform.position + transform.forward * 1.5f;
-        Instantiate(boomerang, spawnPosition, transform.rotation);
+        Quaternion boomerangRotation = transform.rotation;
+        Instantiate(boomerang, spawnPosition, boomerangRotation);
         BoomerangProjectile boomerangScript = boomerang.GetComponent<BoomerangProjectile>();
         boomerangScript.Initialize(transform.forward);
     }

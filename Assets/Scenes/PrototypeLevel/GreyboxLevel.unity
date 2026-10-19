@@ -3342,6 +3342,14 @@ PrefabInstance:
       propertyPath: enemyLayers.m_Bits
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4987556203919058700, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+      propertyPath: boomerangPositionOffset.y
+      value: 0.004
+      objectReference: {fileID: 0}
+    - target: {fileID: 4987556203919058700, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+      propertyPath: boomerangRotationOffset.z
+      value: 90
+      objectReference: {fileID: 0}
     - target: {fileID: 6235477319947844705, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
       propertyPath: m_Name
       value: PlayerMain

@@ -263,6 +263,7 @@ MonoBehaviour:
   isBlocking: 0
   bomb: {fileID: 7191237824088780921, guid: 441d7d44d7e06ef47add36b3faf1ee3a, type: 3}
   boomerang: {fileID: -2814973913976557944, guid: 4190fd9d2bb5871498a8432b787ad2f4, type: 3}
+  thrownBoomerang: 0
   _animator: {fileID: 1676543294204358583}
   playerCamera: {fileID: 0}
   attackPoint: {fileID: 285605019951423836}
@@ -316,7 +317,7 @@ GameObject:
   - component: {fileID: 6454062501118006673}
   m_Layer: 0
   m_Name: PlayerMain
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

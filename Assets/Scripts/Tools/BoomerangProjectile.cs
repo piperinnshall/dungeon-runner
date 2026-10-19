@@ -10,6 +10,8 @@ public class BoomerangProjectile : MonoBehaviour
     Vector3 startPosition;
     Vector3 travelDirection;
 
+    //BoomerangSpin boomerangSpin;
+
     Transform player;
     BoxCollider boxCollider;
     Equipment equipment;
@@ -18,6 +20,7 @@ public class BoomerangProjectile : MonoBehaviour
     public void Initialize(Vector3 direction)
     {
         travelDirection = direction.normalized;
+        transform.Rotate(0, 0, 90);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -27,7 +30,7 @@ public class BoomerangProjectile : MonoBehaviour
         equipment = player.GetComponentInParent<Equipment>();
         movementScript = player.GetComponentInParent<Movement>();
         startPosition = transform.position;
-
+        //boomerangSpin = GetComponent<BoomerangSpin>();
     }
 
     // Update is called once per frame
@@ -37,6 +40,7 @@ public class BoomerangProjectile : MonoBehaviour
         {
             // Move towards the player
             transform.position = Vector3.MoveTowards(transform.position, player.position, speed * Time.deltaTime);
+            
         }
         else
         {
@@ -47,6 +51,7 @@ public class BoomerangProjectile : MonoBehaviour
                 isReturning = true;
             }
         }
+        
         OnCollide();
     }
 
