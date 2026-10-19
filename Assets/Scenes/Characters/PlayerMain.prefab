@@ -261,7 +261,9 @@ MonoBehaviour:
   inputBlock: 0
   canMove: 1
   isBlocking: 0
-  bomb: {fileID: 0}
+  bomb: {fileID: 7191237824088780921, guid: 441d7d44d7e06ef47add36b3faf1ee3a, type: 3}
+  boomerang: {fileID: -2814973913976557944, guid: 4190fd9d2bb5871498a8432b787ad2f4, type: 3}
+  thrownBoomerang: 0
   _animator: {fileID: 1676543294204358583}
   playerCamera: {fileID: 0}
   attackPoint: {fileID: 285605019951423836}
@@ -278,14 +280,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Equipment
   _animator: {fileID: 1676543294204358583}
+  hasSwordAndShield: 1
+  hasBoomerang: 0
   Sword: {fileID: 8963631548067898640, guid: 23f28e477ef84424e97572c8b1b9b694, type: 3}
   Shield: {fileID: 8326143879890840539, guid: 04a2cc346cc8d0c4781ab22ad9dfe295, type: 3}
+  Boomerang: {fileID: 919132149155446097, guid: 36de8e45caa044b4bb741f3f442a315d, type: 3}
   swordPositionOffset: {x: 0, y: 0.001, z: 0}
   swordRotationOffset: {x: -50, y: -100, z: 0}
   shieldPositionOffset: {x: 0.001, y: 0, z: 0}
   shieldRotationOffset: {x: 0, y: 180, z: 100}
+  boomerangPositionOffset: {x: 0, y: 0.004, z: 0}
+  boomerangRotationOffset: {x: 0, y: 0, z: 90}
   swordScale: {x: 0.01, y: 0.01, z: 0.01}
   shieldScale: {x: 0.01, y: 0.01, z: 0.01}
+  boomerangScale: {x: 0.01, y: 0.01, z: 0.01}
 --- !u!114 &6287664101581765583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -309,7 +317,7 @@ GameObject:
   - component: {fileID: 6454062501118006673}
   m_Layer: 0
   m_Name: PlayerMain
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

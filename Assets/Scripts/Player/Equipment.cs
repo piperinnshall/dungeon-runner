@@ -4,26 +4,37 @@ public class Equipment : MonoBehaviour
 {
     [SerializeField] private Animator _animator;
 
+    public bool hasSwordAndShield = true;
+    public bool hasBoomerang = false;
+
+    bool canChangeEquipment = true;
+
     private Transform rightHand;
     private Transform leftHand;
 
     private GameObject equippedRightHand;
     private GameObject equippedLeftHand;
+    private Movement movementScript;
 
     [SerializeField] private GameObject Sword;
     [SerializeField] private GameObject Shield;
+    [SerializeField] private GameObject Boomerang;
 
     [SerializeField] private Vector3 swordPositionOffset;
     [SerializeField] private Vector3 swordRotationOffset;
 
     [SerializeField] private Vector3 shieldPositionOffset;
     [SerializeField] private Vector3 shieldRotationOffset;
-
+    [SerializeField] private Vector3 boomerangPositionOffset;
+    [SerializeField] private Vector3 boomerangRotationOffset;
     [SerializeField] private Vector3 swordScale = Vector3.one;
     [SerializeField] private Vector3 shieldScale = Vector3.one;
+    [SerializeField] private Vector3 boomerangScale = Vector3.one;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        movementScript = GetComponent<Movement>();
+
         _animator = GetComponent<Animator>();
         rightHand = _animator.GetBoneTransform(HumanBodyBones.RightHand);
         leftHand = _animator.GetBoneTransform(HumanBodyBones.LeftHand);
@@ -47,11 +58,28 @@ public class Equipment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log("Right Hand: " + rightHand.position);
-        //Debug.Log("Left Hand: " + leftHand.position);
-        //Debug.Log("Right Hand rotation: " + rightHand.rotation);
-        //Debug.Log("Left Hand rotation: " + leftHand.rotation);
+        if (Input.GetKeyDown(KeyCode.Alpha1) && canChangeEquipment)
+        {
+            EquipRightHand(Sword);
+            EquipLeftHand(Shield);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2) && canChangeEquipment)
+        {
+            EquipRightHand(Boomerang);
+            UnequipLeftHand();
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3) && canChangeEquipment)
+        {
+            UnequipRightHand();
+            UnequipLeftHand();
+        }
+        else if (movementScript.thrownBoomerang == true && hasBoomerang)
+        {
+            canChangeEquipment = false;
+            UnequipRightHand();
+        }
     }
+
 
     public void EquipRightHand(GameObject equipment)
     {
@@ -65,9 +93,24 @@ public class Equipment : MonoBehaviour
             rightHand
         );
 
-        equippedRightHand.transform.localPosition = swordPositionOffset;
-        equippedRightHand.transform.localEulerAngles = swordRotationOffset;
-        equippedRightHand.transform.localScale = swordScale;
+        if(equipment == Boomerang)
+        {
+            equippedRightHand.transform.localPosition = boomerangPositionOffset;
+            equippedRightHand.transform.localEulerAngles = boomerangRotationOffset;
+            equippedRightHand.transform.localScale = boomerangScale;
+            hasBoomerang = true;
+            hasSwordAndShield = false;
+            return;
+        }
+        else if (equipment == Sword)
+        {
+            equippedRightHand.transform.localPosition = swordPositionOffset;
+            equippedRightHand.transform.localEulerAngles = swordRotationOffset;
+            equippedRightHand.transform.localScale = swordScale;
+            hasSwordAndShield = true;
+            hasBoomerang = false;
+            return;
+        }
     }
 
     public void EquipLeftHand(GameObject equipment)
@@ -85,6 +128,31 @@ public class Equipment : MonoBehaviour
         equippedLeftHand.transform.localPosition = shieldPositionOffset;
         equippedLeftHand.transform.localEulerAngles = shieldRotationOffset;
         equippedLeftHand.transform.localScale = shieldScale;
+    }
+
+    public void UnequipRightHand()
+    {
+        if (equippedRightHand != null)
+        {
+            Destroy(equippedRightHand);
+            equippedRightHand = null;
+        }
+    }
+
+    public void UnequipLeftHand()
+    {
+        if (equippedLeftHand != null)
+        {
+            Destroy(equippedLeftHand);
+            equippedLeftHand = null;
+        }
+    }
+
+    public void EquipBoomerang()
+    {
+        EquipRightHand(Boomerang);
+        UnequipLeftHand();
+        canChangeEquipment = true;
     }
 }
 

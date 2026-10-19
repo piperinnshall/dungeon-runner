@@ -2500,7 +2500,7 @@ MonoBehaviour:
   m_OverrideVoxelSize: 0
   m_VoxelSize: 0.33333334
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 883e54d6ef03f134ba9608ed60f293c6, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: dda444d8b63d33d49ac9c1497884dde2, type: 2}
   m_BuildHeightMesh: 0
 --- !u!4 &748113957
 Transform:
@@ -3341,6 +3341,14 @@ PrefabInstance:
     - target: {fileID: 2615983890377418500, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
       propertyPath: enemyLayers.m_Bits
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4987556203919058700, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+      propertyPath: boomerangPositionOffset.y
+      value: 0.004
+      objectReference: {fileID: 0}
+    - target: {fileID: 4987556203919058700, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
+      propertyPath: boomerangRotationOffset.z
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 6235477319947844705, guid: ca0a2fbd56fd0824e82e1c89ad4a1a97, type: 3}
       propertyPath: m_Name
