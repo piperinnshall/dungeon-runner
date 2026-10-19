@@ -16,11 +16,11 @@ public record Falling() : PlayerState;
 public record Attacking() : PlayerState;
 public record Blocking() : PlayerState;
 public record Throwing() : PlayerState;
+public record Aiming() : PlayerState;
 
 
 public class Movement : MonoBehaviour
 {
-
     float inputHorizontal;
     float inputVertical;
     bool inputJump;
@@ -101,6 +101,10 @@ public class Movement : MonoBehaviour
         else if (cc.isGrounded && Input.GetMouseButton(1) && !equipmentScript.hasBoomerang && equipmentScript.hasSwordAndShield)
         {
             return new Blocking();
+        }
+        else if (cc.isGrounded && Input.GetMouseButton(1) && equipmentScript.hasBoomerang)
+        {
+            return new Aiming();
         }
         return currentState;
     }
@@ -192,7 +196,7 @@ public class Movement : MonoBehaviour
         // Play blocking animation
         //Debug.Log("Player is blocking");
         StartBlocking();
-        if (Input.GetMouseButton(1) == false)
+        if (Input.GetMouseButtonUp(1))
         {
             StopBlocking();
             return new Idle();
@@ -209,6 +213,23 @@ public class Movement : MonoBehaviour
         Invoke(nameof(ThrowBoomerang), 0.3f);
 
         return new Idle();
+    }
+
+    public PlayerState HandleAim()
+    {
+        canMove = false;
+        playerCamera.Translate(Vector3.forward * 0.2f);
+        if(Input.GetMouseButtonUp(1))
+        {
+            playerCamera.Translate(Vector3.back * 0.2f);
+            return new Idle();
+        }
+        else if (Input.GetMouseButtonDown(0) && thrownBoomerang == false)
+        {
+            playerCamera.Translate(Vector3.back * 0.2f);
+            return new Throwing();
+        }
+        return currentState;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -237,6 +258,7 @@ public class Movement : MonoBehaviour
             Jumping => HandleJump(),
             Falling => HandleFall(),
             Throwing => HandleThrow(),
+            Aiming => HandleAim(),
             _ => currentState
         };
 
@@ -352,6 +374,7 @@ public class Movement : MonoBehaviour
     void ThrowBoomerang()
     {
         thrownBoomerang = true;
+        // Spawn the boomerang in front of the player
         Vector3 spawnPosition = transform.position + transform.forward * 1.5f;
         Quaternion boomerangRotation = transform.rotation;
         Instantiate(boomerang, spawnPosition, boomerangRotation);

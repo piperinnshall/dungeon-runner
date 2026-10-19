@@ -10,8 +10,6 @@ public class BoomerangProjectile : MonoBehaviour
     Vector3 startPosition;
     Vector3 travelDirection;
 
-    //BoomerangSpin boomerangSpin;
-
     Transform player;
     BoxCollider boxCollider;
     Equipment equipment;
@@ -30,7 +28,6 @@ public class BoomerangProjectile : MonoBehaviour
         equipment = player.GetComponentInParent<Equipment>();
         movementScript = player.GetComponentInParent<Movement>();
         startPosition = transform.position;
-        //boomerangSpin = GetComponent<BoomerangSpin>();
     }
 
     // Update is called once per frame
@@ -40,7 +37,6 @@ public class BoomerangProjectile : MonoBehaviour
         {
             // Move towards the player
             transform.position = Vector3.MoveTowards(transform.position, player.position, speed * Time.deltaTime);
-            
         }
         else
         {
@@ -51,15 +47,16 @@ public class BoomerangProjectile : MonoBehaviour
                 isReturning = true;
             }
         }
-        
         OnCollide();
     }
 
     void OnCollide()
     {
+        // Check for collisions with enemies, walls, and the player, when a collision occurs, the boomerang returns to the player
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, 0.5f);
         foreach (var hitCollider in hitColliders)
         {
+            // If the collider is an enemy, damage them
             EnemyHealth enemyHealth = hitCollider.GetComponentInParent<EnemyHealth>();
             if (hitCollider.CompareTag("Enemy") && enemyHealth != null)
             {
@@ -67,17 +64,19 @@ public class BoomerangProjectile : MonoBehaviour
                 enemyHealth.TakeDamage(damage, transform.position);
                 isReturning = true;
             }
+            // if the collider is a player and the boomerang is returning, destroy the boomerang projectile and equip the boomerang back to the player
             else if (hitCollider.CompareTag("Player") && isReturning)
             {
                 equipment.EquipBoomerang();
                 movementScript.thrownBoomerang = false;
                 Destroy(gameObject);
             }
+            // if the collider is a wall, bounce off the wall and return to the player
             else if (hitCollider.gameObject.layer == LayerMask.NameToLayer("Wall"))
             {
                 isReturning = true;
             }
-            Debug.Log("Collided with: " + hitCollider.name);
+            //Debug.Log("Collided with: " + hitCollider.name);
         }
     }
 }
