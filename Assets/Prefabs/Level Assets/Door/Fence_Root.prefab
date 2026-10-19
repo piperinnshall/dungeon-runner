@@ -84,7 +84,12 @@ MonoBehaviour:
   doorPivot: {fileID: 0}
   openAngle: 90
   openDuration: 0.8
-  interactKey: 102
+  interactKey: 101
+  requiredKey: 
+  lockObject: {fileID: 0}
+  extraLocks: []
+  lockedMessage: It's locked.
+  linkedDoor: {fileID: 0}
 --- !u!54 &7013102712257688545
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -183,7 +188,12 @@ MonoBehaviour:
   doorPivot: {fileID: 0}
   openAngle: 90
   openDuration: 0.8
-  interactKey: 102
+  interactKey: 101
+  requiredKey: 
+  lockObject: {fileID: 0}
+  extraLocks: []
+  lockedMessage: It's locked.
+  linkedDoor: {fileID: 0}
 --- !u!54 &6306601283795141435
 Rigidbody:
   m_ObjectHideFlags: 0

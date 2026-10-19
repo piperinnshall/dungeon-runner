@@ -71,5 +71,52 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c21182d0ef6647e41a1b49b03bd8cd29, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -246403985613985117}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c21182d0ef6647e41a1b49b03bd8cd29, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 466520442853117380}
   m_SourcePrefab: {fileID: 100100000, guid: c21182d0ef6647e41a1b49b03bd8cd29, type: 3}
+--- !u!1 &6601632891760892104 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c21182d0ef6647e41a1b49b03bd8cd29, type: 3}
+  m_PrefabInstance: {fileID: 6295152612836402585}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &-246403985613985117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6601632891760892104}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c10971f1681a8ce439714337b81f55c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::KeyPickup
+  keyId: RustyKey
+  requirePress: 0
+  interactKey: 101
+--- !u!65 &466520442853117380
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6601632891760892104}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.02, y: 0.05888007, z: 0.020000014}
+  m_Center: {x: 0, y: -0.017245635, z: 0}

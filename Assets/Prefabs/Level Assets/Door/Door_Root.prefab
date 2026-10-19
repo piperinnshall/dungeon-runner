@@ -98,7 +98,12 @@ MonoBehaviour:
   doorPivot: {fileID: 0}
   openAngle: 90
   openDuration: 0.8
-  interactKey: 102
+  interactKey: 101
+  requiredKey: 
+  lockObject: {fileID: 0}
+  extraLocks: []
+  lockedMessage: It's locked.
+  linkedDoor: {fileID: 0}
 --- !u!1 &3827509924387650774
 GameObject:
   m_ObjectHideFlags: 0
