@@ -5,12 +5,14 @@ public class Torch : MonoBehaviour
     bool isTorchLit = false;
     bool interact;
     GameObject torchFlame;
+    Light torchLight;
 
     InteractableObject interactableObject;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         torchFlame = transform.Find("Torch Glow Particle effect").gameObject;
+        torchLight = torchFlame.GetComponentInChildren<Light>();
         interactableObject = GetComponent<InteractableObject>();
         ExtinguishTorch();
 
@@ -54,6 +56,7 @@ public class Torch : MonoBehaviour
         isTorchLit = true;
         ParticleSystem flame = torchFlame.GetComponent<ParticleSystem>();
         flame.Play();
+        if (torchLight != null) torchLight.enabled = true;
     }
 
     void ExtinguishTorch()
@@ -61,5 +64,6 @@ public class Torch : MonoBehaviour
         isTorchLit = false;
         ParticleSystem flame = torchFlame.GetComponent<ParticleSystem>();
         flame.Stop();
+        if (torchLight != null) torchLight.enabled = false;
     }
 }

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &3953520140084368027
+--- !u!1001 &980497662672672118
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -10,31 +10,31 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 11.056279
+      value: -36.64565
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.114
+      value: -6.002742
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 46.665
+      value: -19.934635
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.70710695
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.000000021855694
+      value: 0.000000015454312
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0.7071067
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0
+      value: -0.00000001545431
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -42,7 +42,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -62,20 +62,23 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 611244008078624899}
+      addedObject: {fileID: 342271123807569157}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7246754862182035376}
   m_SourcePrefab: {fileID: 100100000, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
---- !u!1 &4187450791505293258 stripped
+--- !u!1 &97395547487971367 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
-  m_PrefabInstance: {fileID: 3953520140084368027}
+  m_PrefabInstance: {fileID: 980497662672672118}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &611244008078624899
+--- !u!64 &342271123807569157
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4187450791505293258}
+  m_GameObject: {fileID: 97395547487971367}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -91,3 +94,17 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -4931767664332496099, guid: 485d6fad7c5a9a149a99da79b0ad3993, type: 3}
+--- !u!114 &7246754862182035376
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 97395547487971367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56ecf4b2e5571b641a41f113c092267c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SlidingDoor
+  slideOffset: {x: -2, y: 0, z: 0}
+  slideDuration: 1
