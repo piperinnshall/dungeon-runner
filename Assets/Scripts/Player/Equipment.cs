@@ -7,11 +7,14 @@ public class Equipment : MonoBehaviour
     public bool hasSwordAndShield = true;
     public bool hasBoomerang = false;
 
+    bool canChangeEquipment = true;
+
     private Transform rightHand;
     private Transform leftHand;
 
     private GameObject equippedRightHand;
     private GameObject equippedLeftHand;
+    private Movement movementScript;
 
     [SerializeField] private GameObject Sword;
     [SerializeField] private GameObject Shield;
@@ -30,6 +33,8 @@ public class Equipment : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        movementScript = GetComponent<Movement>();
+
         _animator = GetComponent<Animator>();
         rightHand = _animator.GetBoneTransform(HumanBodyBones.RightHand);
         leftHand = _animator.GetBoneTransform(HumanBodyBones.LeftHand);
@@ -53,22 +58,28 @@ public class Equipment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Alpha1))
+        if (Input.GetKeyDown(KeyCode.Alpha1) && canChangeEquipment)
         {
             EquipRightHand(Sword);
             EquipLeftHand(Shield);
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        else if (Input.GetKeyDown(KeyCode.Alpha2) && canChangeEquipment)
         {
             EquipRightHand(Boomerang);
             UnequipLeftHand();
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        else if (Input.GetKeyDown(KeyCode.Alpha3) && canChangeEquipment)
         {
             UnequipRightHand();
             UnequipLeftHand();
         }
+        else if (movementScript.thrownBoomerang == true && hasBoomerang)
+        {
+            canChangeEquipment = false;
+            UnequipRightHand();
+        }
     }
+
 
     public void EquipRightHand(GameObject equipment)
     {
@@ -135,6 +146,13 @@ public class Equipment : MonoBehaviour
             Destroy(equippedLeftHand);
             equippedLeftHand = null;
         }
+    }
+
+    public void EquipBoomerang()
+    {
+        EquipRightHand(Boomerang);
+        UnequipLeftHand();
+        canChangeEquipment = true;
     }
 }
 

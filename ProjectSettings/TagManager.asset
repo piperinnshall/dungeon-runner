@@ -9,6 +9,7 @@ TagManager:
   - PlayerPhysics
   - Patrol A
   - walkable
+  - Boomerang
   layers:
   - Default
   - TransparentFX

@@ -64,7 +64,7 @@ public class Movement : MonoBehaviour
 
     private Equipment equipmentScript;
     [SerializeField] BoomerangProjectile boomerang;
-
+    public bool thrownBoomerang = false;
     public Animator _animator;
     public Transform playerCamera;
     public Transform attackPoint;
@@ -139,7 +139,7 @@ public class Movement : MonoBehaviour
             hasAttacked = false;
             return new Attacking();
         }
-        else if (cc.isGrounded && Input.GetMouseButton(1))
+        else if (cc.isGrounded && Input.GetMouseButton(1) && equipmentScript.hasSwordAndShield)
         {
             return new Blocking();
         }
@@ -205,7 +205,8 @@ public class Movement : MonoBehaviour
         // Play throwing animation
         //Debug.Log("Player is throwing");
         _animator.SetTrigger("ThrowTrigger");
-        Instantiate(boomerang, transform.position + transform.right + transform.forward, Quaternion.identity);
+        Invoke(nameof(ThrowBoomerang), 0.3f);
+
         return new Idle();
     }
 
@@ -345,5 +346,14 @@ public class Movement : MonoBehaviour
     {
         isBlocking = false;
         _animator.SetBool("IsBlocking", false);
+    }
+
+    void ThrowBoomerang()
+    {
+        thrownBoomerang = true;
+        Vector3 spawnPosition = transform.position + transform.forward * 1.5f;
+        Instantiate(boomerang, spawnPosition, transform.rotation);
+        BoomerangProjectile boomerangScript = boomerang.GetComponent<BoomerangProjectile>();
+        boomerangScript.Initialize(transform.forward);
     }
 }

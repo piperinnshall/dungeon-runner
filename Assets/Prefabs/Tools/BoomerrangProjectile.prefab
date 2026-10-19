@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -2814973913976557944}
   m_Layer: 0
   m_Name: BoomerrangProjectile
-  m_TagString: Untagged
+  m_TagString: Boomerang
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -55,7 +55,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 36de8e45caa044b4bb741f3f442a315d, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -1.23155
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 36de8e45caa044b4bb741f3f442a315d, type: 3}
       propertyPath: m_LocalPosition.y
@@ -63,7 +63,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 36de8e45caa044b4bb741f3f442a315d, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.29589
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 36de8e45caa044b4bb741f3f442a315d, type: 3}
       propertyPath: m_LocalRotation.w
