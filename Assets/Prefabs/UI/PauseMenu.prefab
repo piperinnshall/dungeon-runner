@@ -760,8 +760,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 329fc3ce1cc91c6459929ba35013487c, type: 2}
-  m_sharedMaterial: {fileID: 7265595223563846183, guid: 329fc3ce1cc91c6459929ba35013487c, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2367b482575e770428c2cf45c5b53f3b, type: 2}
+  m_sharedMaterial: {fileID: 174786862281944150, guid: 2367b482575e770428c2cf45c5b53f3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -785,8 +785,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1786,7 +1786,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ef4a88fc2dfa0c44b861bd8888b2267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyDisplay
-  keyType: 1
+  keyType: 0
   keyIconTemplate: {fileID: 7080505855091775990}
 --- !u!1 &6345819301516456470
 GameObject:
@@ -2025,8 +2025,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: New Text
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 329fc3ce1cc91c6459929ba35013487c, type: 2}
-  m_sharedMaterial: {fileID: 7265595223563846183, guid: 329fc3ce1cc91c6459929ba35013487c, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2367b482575e770428c2cf45c5b53f3b, type: 2}
+  m_sharedMaterial: {fileID: 174786862281944150, guid: 2367b482575e770428c2cf45c5b53f3b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2050,8 +2050,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -2417,7 +2417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ef4a88fc2dfa0c44b861bd8888b2267, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyDisplay
-  keyType: 0
+  keyType: 1
   keyIconTemplate: {fileID: 613764713665204114}
 --- !u!1 &9209055947373953310
 GameObject:

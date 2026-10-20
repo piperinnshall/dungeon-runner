@@ -26,12 +26,14 @@ public class Door : MonoBehaviour
     [SerializeField] private float openDuration = 0.8f;
     [SerializeField] private KeyCode interactKey = KeyCode.F;
 
+    public enum LockType { None, Gold, Silver }
+
     [Header("Locks (optional)")]
-    [Tooltip("LOCK 1: item name the player must have in their Inventory. Leave EMPTY (and Extra Locks empty) for a door with no lock.")]
-    [SerializeField] private string requiredKey = "";
+    [Tooltip("LOCK 1: None = no lock. Gold / Silver = any key of that type opens it (and is used up).")]
+    [SerializeField] private LockType lockType = LockType.None;
     [Tooltip("LOCK 1's model. It is hidden when this lock is opened. Optional.")]
     [SerializeField] private GameObject lockObject;
-    [Tooltip("Need more than one key? Add extra locks here, each with its own key name and lock model. Leave empty for a single-lock door.")]
+    [Tooltip("Need more than one key? Add extra locks here, each with its own key type and lock model. Leave empty for a single-lock door.")]
     [SerializeField] private List<ExtraLock> extraLocks = new List<ExtraLock>();
     [SerializeField] private string lockedMessage = "It's locked.";
     [Tooltip("For double gates: the OTHER leaf. Once this door is fully unlocked, that one is unlocked too. Set it on both leaves.")]
@@ -40,7 +42,7 @@ public class Door : MonoBehaviour
     [System.Serializable]
     public class ExtraLock
     {
-        public string requiredKey;
+        public KeyType keyType = KeyType.Gold;
         public GameObject lockObject;
     }
 
@@ -77,23 +79,25 @@ public class Door : MonoBehaviour
         // Remember the closed pose so Close() returns to exactly this rotation.
         closedRotation = doorPivot.rotation;
 
-        // Build the list of locks. Lock 1 is the Required Key field, the rest come from Extra Locks.
-        // A lock with an empty key name is ignored, so no keys at all = a normal unlocked door.
-        AddLock(requiredKey, lockObject);
+        // Build the list of locks. Lock 1 is the Lock Type field (None = skipped), the rest come from
+        // Extra Locks. No locks at all = a normal unlocked door.
+        if (lockType == LockType.Gold) AddLock(KeyType.Gold, lockObject);
+        else if (lockType == LockType.Silver) AddLock(KeyType.Silver, lockObject);
+        else if (lockObject != null) lockObject.SetActive(false); // no lock, so don't show a lock model
+
         foreach (ExtraLock extra in extraLocks)
-            AddLock(extra.requiredKey, extra.lockObject);
+            AddLock(extra.keyType, extra.lockObject);
     }
 
-    private void AddLock(string key, GameObject model)
+    private void AddLock(KeyType type, GameObject model)
     {
-        if (string.IsNullOrEmpty(key)) return;
-
-        locks.Add(new LockSlot { key = key, model = model, open = false });
+        locks.Add(new LockSlot { key = KeyPickup.ItemName(type), model = model, open = false });
         if (model != null) model.SetActive(true);
     }
 
-    // Tries every lock that is still closed against the player's Inventory. Each lock whose key
-    // the player holds opens and its model disappears. Returns true only when ALL locks are open.
+    // Tries every lock that is still closed against the player's Inventory. For each lock, if the
+    // player carries a key of that type, the lock opens, its model disappears and ONE key of that
+    // type is removed. Returns true only when ALL locks are open.
     private bool TryUnlock(Transform user)
     {
         Inventory inventory = user != null ? user.GetComponentInParent<Inventory>() : null;

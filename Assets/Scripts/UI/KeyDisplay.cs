@@ -6,9 +6,8 @@ using UnityEngine.UI;
 /// HUD: shows one icon for every key of ONE type (gold or silver) the player carries, side by side
 /// like the hearts. Used keys disappear because the Door removes them from the Inventory.
 ///
-/// Setup: put this on an empty UI object with a Horizontal Layout Group (e.g. "GoldKeys").
+/// Setup: put this on the key's ROW object (e.g. "GoldKeyRow", with a Horizontal Layout Group).
 /// Give it ONE child Image with that key's sprite and drag the child into "Key Icon Template".
-/// Make one of these for gold keys and another for silver keys.
 /// </summary>
 public class KeyDisplay : MonoBehaviour
 {
@@ -45,9 +44,7 @@ public class KeyDisplay : MonoBehaviour
     {
         if (keyIconTemplate == null) return;
 
-        int count = 0;
-        foreach (string item in inventory.items)
-            if (KeyPickup.IsKeyOfType(item, keyType)) count++;
+        int count = inventory.CountOf(KeyPickup.ItemName(keyType));
 
         // Make sure there are enough icons, then show exactly 'count' of them.
         while (icons.Count < count)
