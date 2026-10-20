@@ -19,12 +19,6 @@ public class Health : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void TakeDamage(int amount, Vector3 attackerPosition)
     {
         if (isDead)
@@ -40,7 +34,6 @@ public class Health : MonoBehaviour
             if (dotProduct > 0.5f) // > 0.5 means within roughly a 120-degree front cone
             {
                 Debug.Log("Attack blocked completely!");
-                // Play a shield impact particle or sound effect here
                 return;
             }
         }

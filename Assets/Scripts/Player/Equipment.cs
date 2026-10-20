@@ -35,10 +35,12 @@ public class Equipment : MonoBehaviour
     {
         movementScript = GetComponent<Movement>();
 
+        // Get hands from animator
         _animator = GetComponent<Animator>();
         rightHand = _animator.GetBoneTransform(HumanBodyBones.RightHand);
         leftHand = _animator.GetBoneTransform(HumanBodyBones.LeftHand);
 
+        // Create empty GameObjects to hold the equipped items and parent them to the hands
         equippedRightHand = new GameObject("EquippedRightHand");
         equippedLeftHand = new GameObject("EquippedLeftHand");
 
@@ -58,6 +60,7 @@ public class Equipment : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 1 for sword and shield, 2 for boomerang, 3 for unarmed
         if (Input.GetKeyDown(KeyCode.Alpha1) && canChangeEquipment)
         {
             EquipRightHand(Sword);
@@ -73,6 +76,7 @@ public class Equipment : MonoBehaviour
             UnequipRightHand();
             UnequipLeftHand();
         }
+        // Unequip boomerang when thrown
         else if (movementScript.thrownBoomerang == true && hasBoomerang)
         {
             canChangeEquipment = false;
@@ -88,12 +92,10 @@ public class Equipment : MonoBehaviour
             Destroy(equippedRightHand);
         }
 
-        equippedRightHand = Instantiate(
-            equipment,
-            rightHand
-        );
+        equippedRightHand = Instantiate(equipment, rightHand);
 
-        if(equipment == Boomerang)
+        // Set the position and rotation based on the equipment type
+        if (equipment == Boomerang)
         {
             equippedRightHand.transform.localPosition = boomerangPositionOffset;
             equippedRightHand.transform.localEulerAngles = boomerangRotationOffset;
@@ -120,10 +122,7 @@ public class Equipment : MonoBehaviour
             Destroy(equippedLeftHand);
         }
 
-        equippedLeftHand = Instantiate(
-            equipment,
-            leftHand
-        );
+        equippedLeftHand = Instantiate(equipment, leftHand);
 
         equippedLeftHand.transform.localPosition = shieldPositionOffset;
         equippedLeftHand.transform.localEulerAngles = shieldRotationOffset;
