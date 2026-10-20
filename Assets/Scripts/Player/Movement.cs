@@ -94,7 +94,7 @@ public class Movement : MonoBehaviour
             attackStartTime = Time.time;
             hasAttacked = false;
             return new Attacking();
-        } else if (cc.isGrounded && Input.GetMouseButtonDown(0) && equipmentScript.hasBoomerang && thrownBoomerang == false)
+        } else if (cc.isGrounded && Input.GetMouseButtonDown(0) && equipmentScript.hasBoomerang && thrownBoomerang == false && PlayerItems.HasBoomerang)
         {
             return new Throwing();
         }
@@ -102,7 +102,7 @@ public class Movement : MonoBehaviour
         {
             return new Blocking();
         }
-        else if (cc.isGrounded && Input.GetMouseButton(1) && equipmentScript.hasBoomerang)
+        else if (cc.isGrounded && Input.GetMouseButton(1) && equipmentScript.hasBoomerang && PlayerItems.HasBoomerang)
         {
             return new Aiming();
         }
@@ -262,8 +262,8 @@ public class Movement : MonoBehaviour
             _ => currentState
         };
 
-        // Bomb controls
-        if(Input.GetKeyDown(KeyCode.G) && bomb != null)
+        // Bomb controls (PlayerItems.TryUseBomb uses up one bomb; false = locked or none left)
+        if(Input.GetKeyDown(KeyCode.G) && bomb != null && PlayerItems.TryUseBomb())
         {
             currentBomb = Instantiate(bomb.gameObject, transform.position + transform.forward * 1.5f, Quaternion.identity);
             currentBomb.GetComponent<Bomb>().Ignite();

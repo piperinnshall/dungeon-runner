@@ -107,6 +107,7 @@ public class Door : MonoBehaviour
             {
                 slot.open = true;
                 if (slot.model != null) slot.model.SetActive(false);
+                inventory.RemoveItem(slot.key); // the key is used up, so it can't open another lock
             }
             else
             {

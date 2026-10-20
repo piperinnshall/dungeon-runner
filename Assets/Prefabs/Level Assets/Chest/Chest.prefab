@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2314272558411781697}
   - component: {fileID: 390136484674478753}
   - component: {fileID: 1816721019390715101}
+  - component: {fileID: 309509229017604661}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -90,6 +91,27 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &309509229017604661
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1155460648185338349}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.020000005, y: 0.019999994, z: 0.021736866}
+  m_Center: {x: 9.641617e-20, y: 0.00000011920929, z: -0.0008684429}
 --- !u!1 &2941429033838720113
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,6 +185,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2950476938033464043}
+  - component: {fileID: 4887816772889491349}
+  - component: {fileID: 7678493560023582627}
   m_Layer: 0
   m_Name: Chest
   m_TagString: Untagged
@@ -186,6 +210,43 @@ Transform:
   - {fileID: 2859579237912996590}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -88.519, z: 0}
+--- !u!114 &4887816772889491349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5681198418284842412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3dc2d29fbded4890bde7b8c32fbba33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TreasureView
+  id: 
+  value: 0
+  interactKey: 101
+  openTrigger: OpenChest
+--- !u!65 &7678493560023582627
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5681198418284842412}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 4.069206, y: 3.1127186, z: 2.4447029}
+  m_Center: {x: 0.05152488, y: 1.0563586, z: -0.021811446}
 --- !u!1 &5695883494976702977
 GameObject:
   m_ObjectHideFlags: 0
