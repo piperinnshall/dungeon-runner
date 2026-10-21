@@ -11,7 +11,7 @@ using UnityEngine.UI;
 /// </summary>
 public class ItemDisplay : MonoBehaviour
 {
-    public enum Item { Bombs, Boomerang, Lantern }
+    public enum Item { Bombs, Boomerang, Lantern, Talisman }
 
     [SerializeField] private Item item = Item.Bombs;
     [SerializeField] private Image icon;
@@ -39,7 +39,8 @@ public class ItemDisplay : MonoBehaviour
         {
             Item.Bombs => PlayerItems.HasBombs,
             Item.Boomerang => PlayerItems.HasBoomerang,
-            _ => PlayerItems.HasLantern,
+            Item.Lantern => PlayerItems.HasLantern,
+            _ => PlayerItems.HasTalisman,
         };
 
         if (icon != null)

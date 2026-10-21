@@ -40,6 +40,10 @@ public class PauseMenu : MonoBehaviour
     // Project Settings > Player > Active Input Handling to "Both".
     private void Update()
     {
+        // The shop has its own pause; don't open the pause menu on top of it, or with the Esc that closed it.
+        if (Merchant.ShopOpen || Merchant.ClosedOnFrame == Time.frameCount) return;
+        if (DeathScreen.IsShowing) return; // no pausing on the death screen
+
         if (Input.GetKeyDown(pauseKey))
         {
             if (isPaused) Resume();

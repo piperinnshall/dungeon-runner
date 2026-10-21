@@ -35,14 +35,31 @@ public class SlidingDoor : MonoBehaviour
         altars.Add(altar);
     }
 
-    /// <summary>Called by an Altar when it gets lit. Opens the door once all registered altars are lit.</summary>
-    public void AltarLit(Altar altar)
+    /// <summary>
+    /// Called by an Altar when it gets lit. Opens the door once all registered altars are lit.
+    /// instant = true when restoring a level the player has been to before: no slide, no sound.
+    /// </summary>
+    public void AltarLit(Altar altar, bool instant = false)
     {
         litAltars.Add(altar);
-        Debug.Log("Altars lit: " + litAltars.Count + " / " + altars.Count);
+        if (!instant) Debug.Log("Altars lit: " + litAltars.Count + " / " + altars.Count);
 
         if (!isOpen && litAltars.Count >= altars.Count)
-            Open();
+        {
+            if (instant) OpenInstantly();
+            else Open();
+        }
+    }
+
+    // Already-open state when coming back to a level: jump straight to the open position.
+    private void OpenInstantly()
+    {
+        isOpen = true;
+        transform.position += slideOffset;
+
+        if (releaseOnOpen != null)
+            foreach (UnityEngine.AI.NavMeshAgent agent in releaseOnOpen)
+                if (agent != null) agent.enabled = true;
     }
 
     public void Open()

@@ -65,6 +65,15 @@ public class Door : MonoBehaviour
         public string key;
         public GameObject model;
         public bool open;
+        public string worldId; // remembers this lock is open between scene transitions
+    }
+
+    // Opens a lock: hides its model and remembers it in WorldState.
+    private static void OpenSlot(LockSlot slot)
+    {
+        slot.open = true;
+        if (slot.model != null) slot.model.SetActive(false);
+        WorldState.Set(slot.worldId);
     }
     private readonly List<LockSlot> locks = new List<LockSlot>();
 
@@ -116,8 +125,20 @@ public class Door : MonoBehaviour
 
     private void AddLock(KeyType type, GameObject model)
     {
-        locks.Add(new LockSlot { key = KeyPickup.ItemName(type), model = model, open = false });
-        if (model != null) model.SetActive(true);
+        string id = "lock:" + WorldState.IdOf(gameObject) + "#" + locks.Count;
+        LockSlot slot = new LockSlot { key = KeyPickup.ItemName(type), model = model, open = false, worldId = id };
+        locks.Add(slot);
+
+        // Already unlocked earlier (the player came back to this level)? Keep it open.
+        if (WorldState.Has(id))
+        {
+            slot.open = true;
+            if (model != null) model.SetActive(false);
+        }
+        else if (model != null)
+        {
+            model.SetActive(true);
+        }
     }
 
     // Tries every lock that is still closed against the player's Inventory. For each lock, if the
@@ -135,8 +156,7 @@ public class Door : MonoBehaviour
 
             if (inventory != null && inventory.HasItem(slot.key))
             {
-                slot.open = true;
-                if (slot.model != null) slot.model.SetActive(false);
+                OpenSlot(slot);
                 inventory.RemoveItem(slot.key); // the key is used up, so it can't open another lock
                 openedALock = true;
             }
@@ -165,10 +185,7 @@ public class Door : MonoBehaviour
         if (!IsLocked) return; // also stops the two linked leaves calling each other forever
 
         foreach (LockSlot slot in locks)
-        {
-            slot.open = true;
-            if (slot.model != null) slot.model.SetActive(false);
-        }
+            OpenSlot(slot);
 
         if (linkedDoor != null) linkedDoor.Unlock();
     }

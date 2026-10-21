@@ -5090,3 +5090,7 @@ MonoBehaviour:
   heartsRestored: 2
   interactKey: 101
   onlyWhenHurt: 1
+  pickupSound: {fileID: 8300000, guid: 53df184a2c4334e429ee2db5d07d0db9, type: 3}
+  healSound: {fileID: 8300000, guid: f56278e69d67a9746a6755bc6a96881f, type: 3}
+  healDelay: 0
+  volume: 1

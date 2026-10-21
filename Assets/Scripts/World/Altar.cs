@@ -44,18 +44,47 @@ public class Altar : MonoBehaviour
             if (extra != null) extra.Register(this);
     }
 
+    private string WorldId => "altar:" + WorldState.IdOf(gameObject);
+
+    // Lit earlier (the player came back to this level)? Light it again quietly, and open its doors
+    // straight away instead of sliding them. Runs in Start, after every altar has registered in Awake.
+    private void Start()
+    {
+        if (!WorldState.Has(WorldId)) return;
+
+        isLit = true;
+        foreach (GameObject obj in lightUpObjects)
+            if (obj != null) obj.SetActive(true);
+
+        FireSound fireSound = GetComponent<FireSound>();
+        if (fireSound != null) fireSound.StartLoop();
+
+        if (door != null) door.AltarLit(this, true);
+        foreach (SlidingDoor extra in extraDoors)
+            if (extra != null) extra.AltarLit(this, true);
+    }
+
     // NOTE: this uses Unity's classic Input class. If Unity throws an error about it, set
     // Project Settings > Player > Active Input Handling to "Both".
     private void Update()
     {
         if (playerInRange && !isLit && Input.GetKeyDown(interactKey))
+        {
+            // Altars can only be lit once the lantern has been bought from the merchant.
+            if (!PlayerItems.HasLantern)
+            {
+                Debug.Log("You need a lantern to light this.");
+                return;
+            }
             Light();
+        }
     }
 
     public void Light()
     {
         if (isLit) return;
         isLit = true;
+        WorldState.Set(WorldId); // remember it between scene transitions
 
         foreach (GameObject obj in lightUpObjects)
             if (obj != null) obj.SetActive(true);

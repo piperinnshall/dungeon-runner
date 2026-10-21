@@ -50,6 +50,12 @@ public class Torch : MonoBehaviour
         }
         else
         {
+            // Torches can only be lit once the lantern has been bought from the merchant
+            if (!PlayerItems.HasLantern)
+            {
+                Debug.Log("You need a lantern to light this.");
+                return;
+            }
             LightTorch();
         }
     }

@@ -146,6 +146,8 @@ public class Bomb : MonoBehaviour
                 // Rubble burst from the middle of the object that broke.
                 SpawnEffect(rubbleEffectPrefab, hit.bounds.center);
 
+                // Remember it, so it stays destroyed when the player comes back to this level.
+                WorldState.MarkDestroyed(hit.gameObject);
                 Destroy(hit.gameObject);
             }
         }

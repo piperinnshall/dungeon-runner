@@ -24,6 +24,18 @@ public class KeyPickup : MonoBehaviour
 
     private Inventory playerInventory;
     private bool pickedUp;
+    private string worldId;
+
+    private void Awake()
+    {
+        // Already picked up earlier (the player came back to this level)? Then it's gone.
+        worldId = "key:" + WorldState.IdOf(gameObject);
+        if (WorldState.Has(worldId))
+        {
+            pickedUp = true;
+            Destroy(gameObject);
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -51,6 +63,7 @@ public class KeyPickup : MonoBehaviour
         pickedUp = true;
 
         inv.AddItem(ItemName(keyType));
+        WorldState.Set(worldId);
 
         // PlayClipAtPoint keeps playing after the key object is destroyed.
         if (pickupSound != null)

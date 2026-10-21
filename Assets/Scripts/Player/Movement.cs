@@ -75,13 +75,35 @@ public class Movement : MonoBehaviour
     public Transform attackPoint;
     CharacterController cc;
 
+    // Is the player on the ground this frame? Set at the start of Update by CheckGrounded().
+    // (Replaces the raw cc.isGrounded, which can miss the ground and leave the player stuck in "not grounded".)
+    bool grounded;
+    // How far below the feet still counts as "on the ground" for the backup check.
+    [SerializeField] float groundCheckDistance = 0.2f;
+
     public PlayerState currentState = new Idle();
+
+    // cc.isGrounded, plus a backup sphere check just below the capsule's feet.
+    bool CheckGrounded()
+    {
+        if (cc.isGrounded) return true;
+
+        Vector3 scale = transform.lossyScale;
+        float radius = cc.radius * Mathf.Max(scale.x, scale.z) * 0.9f;
+        float halfHeight = Mathf.Max(cc.height * 0.5f * scale.y, radius);
+        Vector3 capsuleCenter = transform.TransformPoint(cc.center);
+        Vector3 bottomSphere = capsuleCenter + Vector3.down * (halfHeight - radius);
+
+        // Start slightly up inside the capsule and cast down a short way. Triggers are ignored.
+        return Physics.SphereCast(bottomSphere + Vector3.up * 0.05f, radius, Vector3.down, out _,
+                                  cc.skinWidth + groundCheckDistance + 0.05f, ~0, QueryTriggerInteraction.Ignore);
+    }
 
     public PlayerState HandleIdle()
     {
         canMove = true;
         //Debug.Log("Player is idle");
-        if (cc.isGrounded && inputJump)
+        if (grounded && inputJump)
         {
             return new Jumping();
         }
@@ -89,24 +111,24 @@ public class Movement : MonoBehaviour
         {
             return new Moving();
         }
-        else if (!cc.isGrounded)
+        else if (!grounded)
         {
             return new Falling();
         }
-        else if (cc.isGrounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime && !equipmentScript.hasBoomerang)
+        else if (grounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime && !equipmentScript.hasBoomerang)
         {
             attackStartTime = Time.time;
             hasAttacked = false;
             return new Attacking();
-        } else if (cc.isGrounded && Input.GetMouseButtonDown(0) && equipmentScript.hasBoomerang && thrownBoomerang == false && PlayerItems.HasBoomerang)
+        } else if (grounded && Input.GetMouseButtonDown(0) && equipmentScript.hasBoomerang && thrownBoomerang == false && PlayerItems.HasBoomerang)
         {
             return new Throwing();
         }
-        else if (cc.isGrounded && Input.GetMouseButton(1) && !equipmentScript.hasBoomerang && equipmentScript.hasSwordAndShield)
+        else if (grounded && Input.GetMouseButton(1) && !equipmentScript.hasBoomerang && equipmentScript.hasSwordAndShield)
         {
             return new Blocking();
         }
-        else if (cc.isGrounded && Input.GetMouseButton(1) && equipmentScript.hasBoomerang && PlayerItems.HasBoomerang)
+        else if (grounded && Input.GetMouseButton(1) && equipmentScript.hasBoomerang && PlayerItems.HasBoomerang)
         {
             return new Aiming();
         }
@@ -118,7 +140,7 @@ public class Movement : MonoBehaviour
         // Play falling animation
         canMove = true;
         //Debug.Log("Player is falling");
-        if (cc.isGrounded)
+        if (grounded)
         {
             verticalVelocity = 0f;
             return new Idle();
@@ -132,7 +154,7 @@ public class Movement : MonoBehaviour
 
         //animator.Play("Move");
 
-        if (!cc.isGrounded)
+        if (!grounded)
         {
             return new Falling();
         } else if (inputJump)
@@ -142,13 +164,13 @@ public class Movement : MonoBehaviour
         {
             return new Idle();
         }
-        else if (cc.isGrounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime && equipmentScript.hasSwordAndShield)
+        else if (grounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime && equipmentScript.hasSwordAndShield)
         {
             attackStartTime = Time.time;
             hasAttacked = false;
             return new Attacking();
         }
-        else if (cc.isGrounded && Input.GetMouseButton(1) && equipmentScript.hasSwordAndShield)
+        else if (grounded && Input.GetMouseButton(1) && equipmentScript.hasSwordAndShield)
         {
             return new Blocking();
         }
@@ -254,6 +276,8 @@ public class Movement : MonoBehaviour
         inputVertical = Input.GetAxis("Vertical");
         inputJump = Input.GetAxis("Jump") == 1f;
 
+        grounded = CheckGrounded();
+
         // State machine
         currentState = currentState switch
         {
@@ -275,7 +299,7 @@ public class Movement : MonoBehaviour
             currentBomb.GetComponent<Bomb>().Ignite();
         }
 
-        bool isGrounded = cc.isGrounded;
+        bool isGrounded = grounded;
         _animator.SetBool("IsGrounded", isGrounded);
 
         // Get movement direction and then move the character controller 
@@ -285,8 +309,13 @@ public class Movement : MonoBehaviour
             cc.Move(movement);
         }
 
-        // Calculate forward direction value for animation
-        float forwardValue = Vector3.Dot(transform.forward, movement.normalized);
+        // Calculate forward direction value for animation.
+        // Uses the HORIZONTAL movement only: with the vertical part included, any gravity build-up made
+        // Forward drop towards 0 and the walk blend tree played idle while the player was moving.
+        Vector3 horizontalMovement = new Vector3(movement.x, 0f, movement.z);
+        float forwardValue = horizontalMovement.sqrMagnitude > 1e-8f
+            ? Vector3.Dot(transform.forward, horizontalMovement.normalized)
+            : 0f;
         _animator.SetFloat("Forward", forwardValue);
 
         // Calculate upward direction value for animation
@@ -330,7 +359,7 @@ public class Movement : MonoBehaviour
         else
         {
             // Apply gravity when not jumping
-            if (cc.isGrounded)
+            if (grounded)
             {
                 // Ensures player remains grounded when on ground and not falling
                 verticalVelocity = -2f;

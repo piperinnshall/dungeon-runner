@@ -49,6 +49,28 @@ public class TreasureManager {
     CoinsChanged?.Invoke(GetTotalCoins());
   }
 
+  // Used by the merchant. Takes 'amount' coins from the player; returns false (and takes nothing) if they
+  // can't afford it. Whatever is left over is kept as one packet.
+  public bool TrySpend(int amount) {
+    if (amount <= 0) return true;
+    int total = GetTotalCoins();
+    if (total < amount) return false;
+
+    int remaining = total - amount;
+    _packets.Clear();
+    if (remaining > 0) _packets.Add(new ICoinPacket.Cheap(remaining));
+    CoinsChanged?.Invoke(GetTotalCoins());
+    return true;
+  }
+
+  // Used on respawn: every treasure closes again with the coins it started with, and the player's
+  // coins are cleared (all the treasure goes "back to where it came from").
+  public void ResetAllTreasure() {
+    _packets.Clear();
+    foreach (var t in _treasures) t.ResetToOriginal();
+    CoinsChanged?.Invoke(GetTotalCoins());
+  }
+
   public void Redistribute() {
     var closed = _treasures.Where(t => !t.State.IsOpened).ToList();
     if (!closed.Any()) return;

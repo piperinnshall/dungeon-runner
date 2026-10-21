@@ -15,9 +15,14 @@ public class Health : MonoBehaviour
     // Optional combat sounds (PlayerSounds component on the player)
     PlayerSounds playerSounds;
 
+    // Fired when the player dies (the DeathScreen listens to this)
+    public static event Action PlayerDied;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // Max health comes from the shop's heart upgrades (3 hearts + 2 per upgrade), so it carries between levels.
+        maxHealth = PlayerItems.MaxHealth;
         health = maxHealth;
         _animator = GetComponent<Animator>();
         playerSounds = GetComponent<PlayerSounds>();
@@ -75,6 +80,7 @@ public class Health : MonoBehaviour
         // Play death anaimation
         // Disable movement
         // Go to death menu/reset level
+        PlayerDied?.Invoke();
         gameObject.SetActive(false);
     }
 }
