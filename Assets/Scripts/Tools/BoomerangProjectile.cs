@@ -61,7 +61,7 @@ public class BoomerangProjectile : MonoBehaviour
             if (hitCollider.CompareTag("Enemy") && enemyHealth != null)
             {
                 Debug.Log(enemyHealth);
-                enemyHealth.TakeDamage(damage, transform.position);
+                enemyHealth.TakeDamage(damage, transform.position, gameObject);
                 isReturning = true;
             }
             // if the collider is a player and the boomerang is returning, destroy the boomerang projectile and equip the boomerang back to the player
