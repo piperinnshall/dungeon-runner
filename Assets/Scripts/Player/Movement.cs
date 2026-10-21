@@ -32,13 +32,20 @@ public class Movement : MonoBehaviour
     // The vertical velocity of the player, used for jumping and falling
     float verticalVelocity = 0f;
 
-    float gravity = 2.5f;
+    // Jump / gravity settings are now shown in the Inspector so they can be tuned (old values: 2.5, 2.5, 0.7).
+    [Header("Jump & Gravity")]
+    [Tooltip("How fast the player speeds up when falling. Higher = heavier, less floaty. (Real-world feel is around 10-20.)")]
+    [SerializeField] float gravity = 15f;
     // The force applied to the player when jumping, the higher the value, the higher the player will jump
-    float jumpForce = 2.5f;
+    [Tooltip("Upward speed at the start of a jump. Higher = jumps higher.")]
+    [SerializeField] float jumpForce = 4f;
     // The time elapsed since the player started jumping, used to determine when to start falling
     float jumpElapsedTime = 0;
     // Max time the player can stay in the air while jumping, after this time the player will start falling
-    float jumpTime = 0.7f;
+    [Tooltip("Seconds the player rises for before starting to fall. Lower = snappier, shorter jump.")]
+    [SerializeField] float jumpTime = 0.35f;
+    [Tooltip("Fastest the player can fall, so long drops don't get out of hand.")]
+    [SerializeField] float maxFallSpeed = 25f;
 
     public bool canMove = true;
 
@@ -354,7 +361,11 @@ public class Movement : MonoBehaviour
 
         if (currentState is Jumping)
         {
-            directionY = Mathf.SmoothStep(jumpForce, jumpForce * 0.30f, jumpElapsedTime / jumpTime) * Time.deltaTime;
+            float upwardSpeed = Mathf.SmoothStep(jumpForce, jumpForce * 0.30f, jumpElapsedTime / jumpTime);
+            directionY = upwardSpeed * Time.deltaTime;
+            // Carry the remaining upward speed into the fall, so gravity curves the jump into a smooth arc
+            // instead of the player suddenly dropping at the top.
+            verticalVelocity = upwardSpeed;
         }
         else
         {
@@ -367,6 +378,7 @@ public class Movement : MonoBehaviour
             else
             {
                 verticalVelocity -= gravity * Time.deltaTime;
+                verticalVelocity = Mathf.Max(verticalVelocity, -maxFallSpeed);
             }
             directionY = verticalVelocity * Time.deltaTime;
         }

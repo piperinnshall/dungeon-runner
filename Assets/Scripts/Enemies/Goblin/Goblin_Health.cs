@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class GoblinHealth : MonoBehaviour, EnemyHealth
@@ -7,6 +8,14 @@ public class GoblinHealth : MonoBehaviour, EnemyHealth
     private Goblin_Behaviour Goblin;
     private bool isDead = false;
     private Animator animator;
+
+    [Header("Coin drop")]
+    [Tooltip("Fewest coins a goblin gives when defeated.")]
+    public int minCoins = 1;
+    [Tooltip("Most coins a goblin gives when defeated.")]
+    public int maxCoins = 2;
+    [Tooltip("Optional sound played when the coins are collected.")]
+    public AudioClip coinSound;
 
     void Start()
     {
@@ -28,6 +37,7 @@ public class GoblinHealth : MonoBehaviour, EnemyHealth
         if (health <= 0)
         {
             GoblinDie();
+            return; // don't let the hit animation replace the death animation
         }
         animator.Play("getHitDaggers");
     }
@@ -43,11 +53,26 @@ public class GoblinHealth : MonoBehaviour, EnemyHealth
 
         Debug.Log("Goblin died");
 
+        DropCoins();
+
         if (animator != null)
         {
             animator.Play("deathDaggers");
             Destroy(gameObject, 2f);
         }
 
+    }
+
+    // Gives the player 1 or 2 coins (straight into their coin total, the HUD counter updates).
+    void DropCoins()
+    {
+        int coins = Random.Range(minCoins, maxCoins + 1);
+        if (coins <= 0) return;
+
+        TreasureManager.Shared.Open(new List<ICoinPacket> { new ICoinPacket.Cheap(coins) });
+        Debug.Log("Goblin dropped " + coins + " coin(s)");
+
+        if (coinSound != null)
+            AudioSource.PlayClipAtPoint(coinSound, transform.position);
     }
 }

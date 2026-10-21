@@ -128,6 +128,10 @@ PrefabInstance:
       propertyPath: health
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4819801586967961303, guid: ff5411ab5bab71441a3ab9407227592b, type: 3}
+      propertyPath: coinSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 24d3a0ce55904874f8c0164a6fc432c9, type: 3}
     - target: {fileID: 5642641287588901561, guid: ff5411ab5bab71441a3ab9407227592b, type: 3}
       propertyPath: m_Name
       value: Goblin

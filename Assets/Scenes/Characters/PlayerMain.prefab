@@ -391,6 +391,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement
   inputBlock: 0
+  gravity: 25
+  jumpForce: 4
+  jumpTime: 0.35
+  maxFallSpeed: 25
   canMove: 1
   isBlocking: 0
   bomb: {fileID: 7191237824088780921, guid: 441d7d44d7e06ef47add36b3faf1ee3a, type: 3}
