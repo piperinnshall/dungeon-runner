@@ -1,7 +1,7 @@
-using NUnit.Framework.Interfaces;
+// (Removed unused "using NUnit.Framework.Interfaces;" and "using System.Reflection.Metadata.Ecma335;":
+//  those are editor-only and can make a game BUILD fail.)
 using System;
 using System.ComponentModel;
-using System.Reflection.Metadata.Ecma335;
 using Unity.AI.Navigation.LowLevel;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -63,6 +63,10 @@ public class Movement : MonoBehaviour
     private GameObject currentBomb;
 
     private Equipment equipmentScript;
+    // Optional combat sounds (PlayerSounds component on the player)
+    private PlayerSounds playerSounds;
+    // Seconds after the attack starts that the hit is checked (and the swing/land sounds play). Was 0.4.
+    [SerializeField] float attackHitDelay = 0.2f;
     [SerializeField] BoomerangProjectile boomerang;
     // Has the player thrown the boomerang? Used to prevent multiple throws
     public bool thrownBoomerang = false;
@@ -175,8 +179,9 @@ public class Movement : MonoBehaviour
         if (!hasAttacked)
         {
             canMove = false;
-            Invoke(nameof(Attack), 0.4f);
+            Invoke(nameof(Attack), attackHitDelay);
             hasAttacked = true;
+            if (playerSounds != null) playerSounds.PlayAttack(); // attack shout
             //Debug.Log("Player is attacking");
             // Play attack animation
             nextAttackTime = Time.time + attackCoolldown;
@@ -238,6 +243,7 @@ public class Movement : MonoBehaviour
         cc = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
         equipmentScript = GetComponent<Equipment>();
+        playerSounds = GetComponent<PlayerSounds>();
     }
 
     // Update is called once per frame
@@ -344,19 +350,27 @@ public class Movement : MonoBehaviour
 
     void Attack()
     {
+        // Sword swing sound, at the same moment as the hit check (and the land sound below)
+        if (playerSounds != null) playerSounds.PlaySwing();
+
         // Detect enemies in range of attack
         Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange);
 
         // For each enemy hit, apply damage
+        bool hitSomething = false;
         foreach (Collider enemy in hitEnemies)
         {
             EnemyHealth enemyHealth = enemy.GetComponentInParent<EnemyHealth>();
             if (enemyHealth != null)
             {
                 enemyHealth.TakeDamage(damage, transform.position);
+                hitSomething = true;
                 //Debug.Log("Enemy Health: " + enemyHealth.health);
             }
         }
+
+        // Attack land sound, once per swing, only if an enemy was hit
+        if (hitSomething && playerSounds != null) playerSounds.PlayHit();
     }
 
     void StartBlocking()

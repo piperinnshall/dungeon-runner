@@ -32,9 +32,20 @@ public class Campfire : MonoBehaviour
     private GameObject player;
     private float alpha;
 
+    private bool isLit;
+    private FireSound fireSound;
+
     private void Awake()
     {
+        fireSound = GetComponent<FireSound>();
         SetFire(startLit);
+        isLit = startLit;
+    }
+
+    private void Start()
+    {
+        // A campfire that starts lit just crackles, with no "fire on" sound.
+        if (startLit && fireSound != null) fireSound.StartLoop();
     }
 
     // NOTE: uses Unity's classic Input class. If Unity throws an error about it, set
@@ -53,7 +64,13 @@ public class Campfire : MonoBehaviour
         Movement movement = player != null ? player.GetComponentInChildren<Movement>() : null;
         if (movement != null) movement.enabled = false;
 
-        SetFire(true);
+        // Light the fire (and play the "fire on" sound) only the first time; after that it's already burning.
+        if (!isLit)
+        {
+            isLit = true;
+            SetFire(true);
+            if (fireSound != null) fireSound.Ignite();
+        }
         yield return new WaitForSecondsRealtime(delayBeforeFade);
 
         yield return Fade(0f, 1f);

@@ -1891,6 +1891,9 @@ MonoBehaviour:
   targetSpawnId: 
   interactKey: 101
   fadeDuration: 0.5
+  openSound: {fileID: 8300000, guid: 2dc17e7219b03154ea8475bd46a0c530, type: 3}
+  closeSound: {fileID: 8300000, guid: 6068383832da7884499334969a482b7e, type: 3}
+  soundVolume: 1
 --- !u!1 &5477335690927637872
 GameObject:
   m_ObjectHideFlags: 0

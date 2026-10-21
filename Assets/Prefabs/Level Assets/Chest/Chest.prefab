@@ -67,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -4215991226499712598, guid: adaa7651137679b44babefc3546c4911, type: 3}
+  - {fileID: 2100000, guid: 79a5730011c17a443a490493b8d543a5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -226,6 +226,13 @@ MonoBehaviour:
   value: 0
   interactKey: 101
   openTrigger: OpenChest
+  openSound: {fileID: 8300000, guid: c34867f9ec66fb940844415092535669, type: 3}
+  cheapCoinSound: {fileID: 8300000, guid: 24d3a0ce55904874f8c0164a6fc432c9, type: 3}
+  moderateCoinSound: {fileID: 8300000, guid: 2f20502ff3b56ab41b610338259f4f89, type: 3}
+  valuableCoinSound: {fileID: 8300000, guid: 43bf5518e1d328442b8acea8a47c7e67, type: 3}
+  sacredCoinSound: {fileID: 8300000, guid: dd82b5f1cb7007c4aad40ea9025b2d57, type: 3}
+  coinDelay: 1
+  volume: 1
 --- !u!65 &7678493560023582627
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -313,7 +320,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -4215991226499712598, guid: adaa7651137679b44babefc3546c4911, type: 3}
+  - {fileID: 2100000, guid: 79a5730011c17a443a490493b8d543a5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

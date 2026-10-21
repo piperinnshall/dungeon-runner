@@ -20,17 +20,41 @@ public class TreasureView : MonoBehaviour {
     [SerializeField] private KeyCode interactKey = KeyCode.E;
     [SerializeField] private string openTrigger = "OpenChest";
 
+    [Header("Sounds (optional)")]
+    [Tooltip("Plays the moment the chest starts opening.")]
+    [SerializeField] private AudioClip openSound;
+    [Tooltip("Played when the coins arrive, picked by this chest's Value.")]
+    [SerializeField] private AudioClip cheapCoinSound;
+    [SerializeField] private AudioClip moderateCoinSound;
+    [SerializeField] private AudioClip valuableCoinSound;
+    [SerializeField] private AudioClip sacredCoinSound;
+    [Tooltip("Seconds between the chest opening and the coins arriving. Negative = wait until the open sound finishes.")]
+    [SerializeField] private float coinDelay = -1f;
+    [Range(0f, 1f)] [SerializeField] private float volume = 1f;
+
     public string Id => string.IsNullOrEmpty(id) ? $"{gameObject.scene.name}/{name}" : id;
 
     private Animator animator;
     private ITreasure _treasure;
     private bool playerInRange;
+    private bool opening;
+    private AudioSource audioSource;
 
     // Kept so other code can still hand a view its treasure manually, like the old World/Test setup did.
     public void Initialize(ITreasure treasure) => _treasure = treasure;
 
     private void Awake() {
       animator = GetComponentInChildren<Animator>();
+
+      // Sound comes from the chest's position in 3D. Uses an Audio Source on the chest if there is one.
+      audioSource = GetComponent<AudioSource>();
+      if (audioSource == null) {
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1f;
+        audioSource.minDistance = 2f;
+        audioSource.maxDistance = 20f;
+      }
+      audioSource.playOnAwake = false;
     }
 
     private void Start() {
@@ -55,10 +79,31 @@ public class TreasureView : MonoBehaviour {
     }
 
     public void Open() {
-      if (_treasure == null || _treasure.State.IsOpened) return;
-      _treasure.Open();
-      PlayOpenAnimation();
+      if (_treasure == null || _treasure.State.IsOpened || opening) return;
+      StartCoroutine(OpenRoutine());
     }
+
+    // 1) lid opens + open sound   2) short wait   3) coins go to the player + coin sound for this chest's value
+    private System.Collections.IEnumerator OpenRoutine() {
+      opening = true;
+      PlayOpenAnimation();
+      if (openSound != null) audioSource.PlayOneShot(openSound, volume);
+
+      float wait = coinDelay >= 0f ? coinDelay : (openSound != null ? openSound.length : 0f);
+      if (wait > 0f) yield return new WaitForSeconds(wait);
+
+      _treasure.Open();
+      AudioClip coinSound = CoinSoundFor(value);
+      if (coinSound != null) audioSource.PlayOneShot(coinSound, volume);
+      opening = false;
+    }
+
+    private AudioClip CoinSoundFor(Value v) => v switch {
+      Value.Moderate => moderateCoinSound,
+      Value.Valuable => valuableCoinSound,
+      Value.Sacred   => sacredCoinSound,
+      _              => cheapCoinSound,
+    };
 
     private void PlayOpenAnimation() {
       if (animator != null) animator.SetTrigger(openTrigger);

@@ -22,7 +22,15 @@ public class SceneDoor : MonoBehaviour
     [Tooltip("Seconds to fade out, and again to fade back in.")]
     [SerializeField] private float fadeDuration = 0.5f;
 
+    [Header("Sounds (optional)")]
+    [Tooltip("Plays as the player uses the door (while the screen fades out).")]
+    [SerializeField] private AudioClip openSound;
+    [Tooltip("Plays as the new scene fades in, like the door shutting behind the player.")]
+    [SerializeField] private AudioClip closeSound;
+    [Range(0f, 1f)] [SerializeField] private float soundVolume = 1f;
+
     private bool playerInRange;
+    private bool used;
 
     // NOTE: this uses Unity's classic Input class. If Unity throws an error about it, either set
     // Project Settings > Player > Active Input Handling to "Both", or replace the check below with
@@ -47,7 +55,34 @@ public class SceneDoor : MonoBehaviour
             return;
         }
 
+        if (used) return; // ignore extra presses while the screen is fading
+        used = true;
+
+        PlaySurvivingSceneLoad(openSound, 0f);
+        // Roughly when the next scene starts fading in (fade out + loading + fade in start).
+        PlaySurvivingSceneLoad(closeSound, fadeDuration + 0.3f);
+
         SceneTransition.Go(targetScene, targetSpawnId, fadeDuration);
+    }
+
+    // The door (and its scene) is destroyed when the next scene loads, which would cut a normal sound
+    // off. So play it from a temporary object that survives the scene change, then delete itself.
+    // 2D, because the listener (camera) changes scene too.
+    private void PlaySurvivingSceneLoad(AudioClip clip, float delay)
+    {
+        if (clip == null) return;
+
+        GameObject holder = new GameObject("SceneDoorSound");
+        DontDestroyOnLoad(holder);
+
+        AudioSource source = holder.AddComponent<AudioSource>();
+        source.clip = clip;
+        source.volume = soundVolume;
+        source.spatialBlend = 0f;
+        source.ignoreListenerPause = true;
+        source.PlayDelayed(delay);
+
+        Destroy(holder, delay + clip.length + 0.1f);
     }
 
     private void OnTriggerEnter(Collider other)

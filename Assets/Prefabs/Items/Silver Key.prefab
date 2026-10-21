@@ -117,6 +117,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c10971f1681a8ce439714337b81f55c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::KeyPickup
-  keyId: RustyKey
+  keyType: 0
   requirePress: 0
   interactKey: 101
+  pickupSound: {fileID: 8300000, guid: 2aa6e071a30ed914e931529ce87f64c2, type: 3}
+  pickupVolume: 1

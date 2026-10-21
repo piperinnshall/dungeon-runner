@@ -48,6 +48,8 @@ GameObject:
   - component: {fileID: 2615983890377418500}
   - component: {fileID: 4987556203919058700}
   - component: {fileID: 6287664101581765583}
+  - component: {fileID: 3954211566684745555}
+  - component: {fileID: 5861418653048639464}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -262,6 +264,7 @@ MonoBehaviour:
   canMove: 1
   isBlocking: 0
   bomb: {fileID: 7191237824088780921, guid: 441d7d44d7e06ef47add36b3faf1ee3a, type: 3}
+  attackHitDelay: 0.2
   boomerang: {fileID: -2814973913976557944, guid: 4190fd9d2bb5871498a8432b787ad2f4, type: 3}
   thrownBoomerang: 0
   _animator: {fileID: 1676543294204358583}
@@ -306,6 +309,52 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b53a70d2c5c57c48bb1c6f83b5a647e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Interact
+--- !u!114 &3954211566684745555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4736324839012614138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e264b696708dc448bd86da9832538c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSounds
+  swordSwing: {fileID: 8300000, guid: 6c67b1d13f552ac418005ef0806656d7, type: 3}
+  attackShouts:
+  - {fileID: 8300000, guid: 96d279671dc4e9349ae337f552ca29f9, type: 3}
+  - {fileID: 8300000, guid: 5da5beed32b8dcb40aa1e4b89ea6645b, type: 3}
+  attackLand: {fileID: 8300000, guid: c69e0da4a749bb649b93ad9e21a28975, type: 3}
+  hurtShouts:
+  - {fileID: 8300000, guid: 86a4920a5bc387e44935c6dbd939a409, type: 3}
+  - {fileID: 8300000, guid: ba0a5c1dbd80b85478b64b3e8b7946cf, type: 3}
+  block: {fileID: 8300000, guid: ed73cb1b8f0df664d9a41634cf1b7a48, type: 3}
+  shoutVolume: 1
+  effectVolume: 1
+  pitchVariation: 0.05
+--- !u!114 &5861418653048639464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4736324839012614138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb2f1741f9848a7409c0040d3642bd5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Footsteps
+  footstepClips:
+  - {fileID: 8300000, guid: eabd9fe96c917bc44958956b973dfe04, type: 3}
+  - {fileID: 8300000, guid: 13a81b013c75ccc4eaf66071eb79d41c, type: 3}
+  - {fileID: 8300000, guid: 7ee75291d95446a4fb0f73dc81d1ffc0, type: 3}
+  - {fileID: 8300000, guid: f81fbeb4ebe170848b460e817b79fa6a, type: 3}
+  - {fileID: 8300000, guid: 410084f20faed4d45ba07eb519945142, type: 3}
+  stepDistance: 2.95
+  volume: 0.5
+  pitchVariation: 0.1
+  minSpeed: 0.5
 --- !u!1 &6235477319947844705
 GameObject:
   m_ObjectHideFlags: 0

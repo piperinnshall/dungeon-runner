@@ -60,6 +60,10 @@ public class Altar : MonoBehaviour
         foreach (GameObject obj in lightUpObjects)
             if (obj != null) obj.SetActive(true);
 
+        // Fire audio, if a FireSound component is on the altar.
+        FireSound fireSound = GetComponent<FireSound>();
+        if (fireSound != null) fireSound.Ignite();
+
         if (door != null) door.AltarLit(this);
         foreach (SlidingDoor extra in extraDoors)
             if (extra != null) extra.AltarLit(this);

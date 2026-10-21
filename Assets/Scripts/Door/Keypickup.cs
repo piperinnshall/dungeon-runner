@@ -15,6 +15,10 @@ public class KeyPickup : MonoBehaviour
     [SerializeField] private bool requirePress = false;
     [SerializeField] private KeyCode interactKey = KeyCode.F;
 
+    [Header("Sound (optional)")]
+    [SerializeField] private AudioClip pickupSound;
+    [Range(0f, 1f)] [SerializeField] private float pickupVolume = 1f;
+
     /// <summary>The name a key of this type has in the Inventory ("GoldKey" or "SilverKey").</summary>
     public static string ItemName(KeyType type) => type == KeyType.Gold ? "GoldKey" : "SilverKey";
 
@@ -47,6 +51,11 @@ public class KeyPickup : MonoBehaviour
         pickedUp = true;
 
         inv.AddItem(ItemName(keyType));
+
+        // PlayClipAtPoint keeps playing after the key object is destroyed.
+        if (pickupSound != null)
+            AudioSource.PlayClipAtPoint(pickupSound, transform.position, pickupVolume);
+
         Destroy(gameObject);
     }
 }

@@ -3,7 +3,17 @@ guid: 36de8e45caa044b4bb741f3f442a315d
 ModelImporter:
   serializedVersion: 24501
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: boom wrap
+    second: {fileID: 2100000, guid: bbd299e1232a8eb4ebd98204ac5963a6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: boomerga
+    second: {fileID: 2100000, guid: 1004560b6258d084c96c4bce148c924d, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

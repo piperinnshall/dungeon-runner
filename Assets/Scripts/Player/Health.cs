@@ -1,5 +1,5 @@
 using System;
-using UnityEditor;
+// (Removed unused "using UnityEditor;": it's editor-only and makes a game BUILD fail.)
 using UnityEngine;
 
 public class Health : MonoBehaviour
@@ -12,17 +12,21 @@ public class Health : MonoBehaviour
 
     public Animator _animator;
 
+    // Optional combat sounds (PlayerSounds component on the player)
+    PlayerSounds playerSounds;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         health = maxHealth;
         _animator = GetComponent<Animator>();
+        playerSounds = GetComponent<PlayerSounds>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void TakeDamage(int amount, Vector3 attackerPosition)
@@ -41,6 +45,7 @@ public class Health : MonoBehaviour
             {
                 Debug.Log("Attack blocked completely!");
                 // Play a shield impact particle or sound effect here
+                if (playerSounds != null) playerSounds.PlayBlock();
                 return;
             }
         }
@@ -48,6 +53,7 @@ public class Health : MonoBehaviour
         moveScript.canMove = false;
         // Apply Damage
         health -= amount;
+        if (playerSounds != null) playerSounds.PlayHurt(); // random hurt shout
         Invoke(nameof(CanMoveAgain), 0.05f);
         _animator.SetTrigger("HitTrigger");
         if (health <= 0)
