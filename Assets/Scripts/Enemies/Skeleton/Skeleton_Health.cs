@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SkeletonHealth : MonoBehaviour, EnemyHealth
+public class SkeletonHealth : MonoBehaviour, EnemyHealth, EnemyStagger
 {
     public int maxHealth = 2;
     public int health;
@@ -18,7 +18,7 @@ public class SkeletonHealth : MonoBehaviour, EnemyHealth
 
     }
 
-    public void TakeDamage(int amount, Vector3 attackerPosition)
+    public void TakeDamage(int amount, Vector3 attackerPosition, GameObject attacker)
     {
         if (isDead) {  return; }
 
@@ -45,7 +45,7 @@ public class SkeletonHealth : MonoBehaviour, EnemyHealth
 
         if (animator != null)
         {
-            animator.Play("1HandedDeath", 0, 0f);
+            animator.Play("1HandedDeath");
         }
 
         Invoke(nameof(Respawn), respawnTime);
@@ -68,5 +68,13 @@ public class SkeletonHealth : MonoBehaviour, EnemyHealth
         {
             animator.Play("ComeOutOfTheGround1Handed_A");
         }
+    }
+
+    public void Stagger()
+    {
+        if (isDead || skeleton == null)
+            return;
+
+        skeleton.ChangeState(Skeleton_Behaviour.EnemyState.Stagger);
     }
 }

@@ -7,6 +7,7 @@ public class Health : MonoBehaviour
     public int maxHealth = 5;
     public int health;
     public Boolean isDead = false;
+    private Combat combatScript;
 
     [SerializeField] Movement moveScript;
 
@@ -17,15 +18,16 @@ public class Health : MonoBehaviour
     {
         health = maxHealth;
         _animator = GetComponent<Animator>();
+        combatScript = GetComponent<Combat>();
     }
 
-    public void TakeDamage(int amount, Vector3 attackerPosition)
+    public void TakeDamage(int amount, Vector3 attackerPosition, GameObject attacker)
     {
         if (isDead)
             return;
 
         // If blocking...
-        if (moveScript.isBlocking == true)
+        if (moveScript.isBlocking) //don't need to check if true because it won't this returns bool
         {
             // Check if attacker is infront of player
             Vector3 dirToAttacker = (attackerPosition - transform.position).normalized;
@@ -34,6 +36,15 @@ public class Health : MonoBehaviour
             if (dotProduct > 0.5f) // > 0.5 means within roughly a 120-degree front cone
             {
                 Debug.Log("Attack blocked completely!");
+
+                EnemyStagger enemy = attacker.GetComponentInParent<EnemyStagger>();
+
+                if (enemy != null && combatScript != null && Time.time - combatScript.blockStartTime <= 1.5f)
+                {
+                    enemy.Stagger();
+                    Debug.Log("Perfect block! Enemy staggered!");
+                }
+
                 return;
             }
         }

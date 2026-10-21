@@ -22,7 +22,7 @@ public class Combat : MonoBehaviour
 
     private CombatState currentState = CombatState.Idle;
     private float nextAttackTime = 0f;
-
+    public float blockStartTime { get; private set; } // used for pary timing
 
     void Update()
     {
@@ -74,7 +74,7 @@ public class Combat : MonoBehaviour
 
             if (enemyHealth != null)
             {
-                enemyHealth.TakeDamage(attackDamage, transform.position);
+                enemyHealth.TakeDamage(attackDamage, transform.position, gameObject);
             }
         }
 
@@ -87,7 +87,7 @@ public class Combat : MonoBehaviour
         {
             return;
         }
-
+        blockStartTime = Time.time;
         currentState = CombatState.Blocking;
 
         // Disable movement here if needed
@@ -132,7 +132,7 @@ public class Combat : MonoBehaviour
 
         if (playerHealth != null)
         {
-            playerHealth.TakeDamage(damage, transform.position);
+            playerHealth.TakeDamage(damage, transform.position, gameObject);
 
             Debug.Log("Player Health: " + playerHealth.health);
         }

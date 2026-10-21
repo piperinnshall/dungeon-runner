@@ -56,6 +56,7 @@ public class Movement : MonoBehaviour
     bool hasAttacked;
     // Is the player blocking?
     public bool isBlocking = false;
+    // Used for parry timing, stores the time when the player started blocking
 
     [SerializeField] Bomb bomb;
     private GameObject currentBomb;
@@ -340,7 +341,7 @@ public class Movement : MonoBehaviour
             EnemyHealth enemyHealth = enemy.GetComponentInParent<EnemyHealth>();
             if (enemyHealth != null)
             {
-                enemyHealth.TakeDamage(damage, transform.position);
+                enemyHealth.TakeDamage(damage, transform.position, gameObject);
             }
         }
     }

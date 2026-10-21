@@ -99,7 +99,7 @@ public class Goblin_AttackState : MonoBehaviour
 
         if (playerHealth != null)
         {
-            playerHealth.TakeDamage(1, transform.position);
+            playerHealth.TakeDamage(1, transform.position, gameObject);
             Debug.Log("Player Health: " + playerHealth.health);
         }
     }
