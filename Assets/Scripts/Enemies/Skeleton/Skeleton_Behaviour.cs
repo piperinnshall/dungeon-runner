@@ -1,25 +1,32 @@
 using UnityEngine;
 
-public class Skeleton_Behaviour : MonoBehaviour
+public class Skeleton_Behaviour : MonoBehaviour, EnemyStagger
 {
     public enum EnemyState
     {
         Patrol,
         Chase,
-        Attack
+        Attack,
+        Stagger
     }
     public bool isDead = false;
     public EnemyState currentState = EnemyState.Patrol;
     public float chaseRadius = 20f;
+    public float lastAttackTime = -10f;
+    public float staggerDuration = 1.5f;
+    private float staggerEndTime;
+
     private Skeleton_PatrolState patrolState;
     private Skeleton_ChaseState chaseState;
     private Skeleton_AttackState attackState;
+    private Skeleton_StaggerState staggerState;
 
     void Start()
     {
         patrolState = GetComponent<Skeleton_PatrolState>();
         chaseState = GetComponent<Skeleton_ChaseState>();
         attackState = GetComponent<Skeleton_AttackState>();
+        staggerState = GetComponent<Skeleton_StaggerState>();
 
         if (patrolState == null)
         {
@@ -34,6 +41,11 @@ public class Skeleton_Behaviour : MonoBehaviour
         if (attackState == null)
         {
             Debug.LogError("Skeleton_AttackState is missing from the skeleton");
+        }
+
+        if (staggerState == null)
+        {
+            Debug.LogError("Skeleton_StaggerState is missing from the skeleton");
         }
     }
 
@@ -56,6 +68,9 @@ public class Skeleton_Behaviour : MonoBehaviour
             case EnemyState.Attack:
                 attackState.UpdateState();
                 break;
+            case EnemyState.Stagger:
+                staggerState.UpdateState();
+                break;
         }
     }
 
@@ -69,5 +84,13 @@ public class Skeleton_Behaviour : MonoBehaviour
         currentState = newState;
 
         Debug.Log(gameObject.name + " changed state to " + currentState);
+    }
+
+    public void Stagger()
+    {
+        if (isDead)
+            return;
+
+        ChangeState(EnemyState.Stagger);
     }
 }

@@ -21,12 +21,11 @@ public class GoblinHealth : MonoBehaviour, EnemyHealth
     {
         Goblin = GetComponent<Goblin_Behaviour>();
         health = maxHealth;
-
         animator = GetComponent<Animator>();
 
     }
 
-    public void TakeDamage(int amount, Vector3 attackerPosition)
+    public void TakeDamage(int amount, Vector3 attackerPosition, GameObject attacker)
     {
         if (isDead) {  return; }
 
@@ -76,3 +75,4 @@ public class GoblinHealth : MonoBehaviour, EnemyHealth
             AudioSource.PlayClipAtPoint(coinSound, transform.position);
     }
 }
+

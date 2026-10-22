@@ -12,7 +12,7 @@ public class Skeleton_AttackState : MonoBehaviour
     private Animator animator;
 
     public float attackDistance = 1.5f;
-    public float attackCooldown = 3.2f; //animation duration is 0.66 seconds trust
+    public float attackCooldown = 2.2f; //animation duration is 0.66 seconds trust
 
     private bool attacking = false;
     private float attackTimer = 0f;
@@ -99,7 +99,7 @@ public class Skeleton_AttackState : MonoBehaviour
 
         if (playerHealth != null)
         {
-            playerHealth.TakeDamage(1, transform.position);
+            playerHealth.TakeDamage(1, transform.position, gameObject);
             Debug.Log("Player Health: " + playerHealth.health);
         }
     }

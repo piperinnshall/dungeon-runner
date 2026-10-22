@@ -7,6 +7,7 @@ public class Health : MonoBehaviour
     public int maxHealth = 5;
     public int health;
     public Boolean isDead = false;
+    private Combat combatScript;
 
     [SerializeField] Movement moveScript;
 
@@ -34,13 +35,13 @@ public class Health : MonoBehaviour
 
     }
 
-    public void TakeDamage(int amount, Vector3 attackerPosition)
+    public void TakeDamage(int amount, Vector3 attackerPosition, GameObject attacker)
     {
         if (isDead)
             return;
 
         // If blocking...
-        if (moveScript.isBlocking == true)
+        if (moveScript.isBlocking) //don't need to check if true because it won't this returns bool
         {
             // Check if attacker is infront of player
             Vector3 dirToAttacker = (attackerPosition - transform.position).normalized;

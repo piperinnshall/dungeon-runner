@@ -24,8 +24,6 @@ public class Movement : MonoBehaviour
     float inputHorizontal;
     float inputVertical;
     bool inputJump;
-    bool inputAttack;
-    public bool inputBlock;
 
     // The horizontal velocity of the player, used for moving
     float velocity = 5.5f;
@@ -65,6 +63,7 @@ public class Movement : MonoBehaviour
     bool hasAttacked;
     // Is the player blocking?
     public bool isBlocking = false;
+    // Used for parry timing, stores the time when the player started blocking
 
     [SerializeField] Bomb bomb;
     private GameObject currentBomb;
@@ -108,7 +107,10 @@ public class Movement : MonoBehaviour
 
     public PlayerState HandleIdle()
     {
+        // Allow movement in idle state
         canMove = true;
+        // Transition to other states based on input
+        if (cc.isGrounded && inputJump)
         //Debug.Log("Player is idle");
         if (grounded && inputJump)
         {
@@ -144,7 +146,6 @@ public class Movement : MonoBehaviour
 
     public PlayerState HandleFall()
     {
-        // Play falling animation
         canMove = true;
         //Debug.Log("Player is falling");
         if (grounded)
@@ -159,7 +160,6 @@ public class Movement : MonoBehaviour
     {
         canMove = true;
 
-        //animator.Play("Move");
 
         if (!grounded)
         {
@@ -181,7 +181,6 @@ public class Movement : MonoBehaviour
         {
             return new Blocking();
         }
-        //Debug.Log("Player is moving");
         return currentState;
     }
 
@@ -190,7 +189,6 @@ public class Movement : MonoBehaviour
         canMove = true;
         _animator.SetTrigger("JumpTrigger");
 
-        //Debug.Log("Player is jumping");
         jumpElapsedTime += Time.deltaTime;
         if (jumpElapsedTime >= jumpTime)
         {
@@ -227,8 +225,6 @@ public class Movement : MonoBehaviour
     public PlayerState HandleBlock()
     {
         canMove = false;
-        // Play blocking animation
-        //Debug.Log("Player is blocking");
         StartBlocking();
         if (Input.GetMouseButtonUp(1))
         {
@@ -241,8 +237,6 @@ public class Movement : MonoBehaviour
     public PlayerState HandleThrow()
     {
         canMove = false;
-        // Play throwing animation
-        //Debug.Log("Player is throwing");
         _animator.SetTrigger("ThrowTrigger");
         Invoke(nameof(ThrowBoomerang), 0.3f);
 

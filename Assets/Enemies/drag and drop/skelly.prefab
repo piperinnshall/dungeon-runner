@@ -191,6 +191,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7187591684676563840, guid: d3d325e6be66ccb4f9453683c3c63765, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7559702429342043225}
+    - targetCorrespondingSourceObject: {fileID: 7187591684676563840, guid: d3d325e6be66ccb4f9453683c3c63765, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5901425554763957773}
   m_SourcePrefab: {fileID: 100100000, guid: d3d325e6be66ccb4f9453683c3c63765, type: 3}
 --- !u!1 &2676684623671565631 stripped
 GameObject:
@@ -278,6 +281,19 @@ MonoBehaviour:
   maxHealth: 2
   health: 2
   respawnTime: 10
+--- !u!114 &5901425554763957773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2676684623671565631}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab8f486b6b048894d8d2d59007d95732, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Skeleton_StaggerState
+  staggerDuration: 1
 --- !u!4 &2676684623671853343 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7187591684676726688, guid: d3d325e6be66ccb4f9453683c3c63765, type: 3}

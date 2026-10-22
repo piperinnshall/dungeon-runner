@@ -1479,6 +1479,7 @@ GameObject:
   - component: {fileID: 2382508069289221463}
   - component: {fileID: 953027128207551520}
   - component: {fileID: 3354992660694532053}
+  - component: {fileID: 5488461167684656798}
   m_Layer: 0
   m_Name: Goblin
   m_TagString: Enemy
@@ -1557,6 +1558,7 @@ MonoBehaviour:
   isDead: 0
   currentState: 0
   chaseRadius: 15
+  staggerDuration: 1
 --- !u!114 &1458190983440703222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1645,6 +1647,19 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
+--- !u!114 &5488461167684656798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5642641287588901561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dfe23dc6ff739e4681cbe110e61ae86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Goblin_StaggerState
+  staggerDuration: 1
 --- !u!1 &5642641287588901565
 GameObject:
   m_ObjectHideFlags: 0
