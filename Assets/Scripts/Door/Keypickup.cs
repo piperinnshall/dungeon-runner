@@ -1,20 +1,41 @@
 using UnityEngine;
 
+public enum KeyType { Gold, Silver }
+
 /// <summary>
-/// Put this on the key object (with a BoxCollider that has "Is Trigger" ticked).
-/// When the player walks into it (or presses the interact key, if requirePress is on),
-/// the key is added to their Inventory and the key object disappears.
-/// The keyId must match the "Required Key" on the Door.
+/// Put this on a key object (with a BoxCollider that has "Is Trigger" ticked).
+/// When the player walks into it (or presses the interact key, if Require Press is on), a gold or
+/// silver key goes into their Inventory and the key object disappears.
+/// Any gold key opens any gold lock, and any silver key opens any silver lock. Keys are used up.
 /// </summary>
 public class KeyPickup : MonoBehaviour
 {
-    [Tooltip("Must match the Door's 'Required Key' exactly (case-sensitive).")]
-    [SerializeField] private string keyId = "RustyKey";
+    [SerializeField] private KeyType keyType = KeyType.Gold;
     [Tooltip("Off = picked up as soon as the player touches it. On = player must also press the interact key.")]
     [SerializeField] private bool requirePress = false;
     [SerializeField] private KeyCode interactKey = KeyCode.F;
 
+    [Header("Sound (optional)")]
+    [SerializeField] private AudioClip pickupSound;
+    [Range(0f, 1f)] [SerializeField] private float pickupVolume = 1f;
+
+    /// <summary>The name a key of this type has in the Inventory ("GoldKey" or "SilverKey").</summary>
+    public static string ItemName(KeyType type) => type == KeyType.Gold ? "GoldKey" : "SilverKey";
+
     private Inventory playerInventory;
+    private bool pickedUp;
+    private string worldId;
+
+    private void Awake()
+    {
+        // Already picked up earlier (the player came back to this level)? Then it's gone.
+        worldId = "key:" + WorldState.IdOf(gameObject);
+        if (WorldState.Has(worldId))
+        {
+            pickedUp = true;
+            Destroy(gameObject);
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -38,7 +59,16 @@ public class KeyPickup : MonoBehaviour
 
     private void PickUp(Inventory inv)
     {
-        inv.AddItem(keyId);
+        if (pickedUp) return; // stops a double pickup if the player has more than one collider
+        pickedUp = true;
+
+        inv.AddItem(ItemName(keyType));
+        WorldState.Set(worldId);
+
+        // PlayClipAtPoint keeps playing after the key object is destroyed.
+        if (pickupSound != null)
+            AudioSource.PlayClipAtPoint(pickupSound, transform.position, pickupVolume);
+
         Destroy(gameObject);
     }
 }

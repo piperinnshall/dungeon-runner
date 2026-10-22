@@ -99,11 +99,16 @@ MonoBehaviour:
   openAngle: 90
   openDuration: 0.8
   interactKey: 101
-  requiredKey: 
+  lockType: 0
   lockObject: {fileID: 0}
   extraLocks: []
   lockedMessage: It's locked.
   linkedDoor: {fileID: 0}
+  openSound: {fileID: 8300000, guid: 2dc17e7219b03154ea8475bd46a0c530, type: 3}
+  closeSound: {fileID: 8300000, guid: 6068383832da7884499334969a482b7e, type: 3}
+  unlockSound: {fileID: 8300000, guid: f3f544b7bb4043a4cb5ec4b912ce4ee9, type: 3}
+  soundVolume: 1
+  openDelayAfterUnlock: 0.4
 --- !u!1 &3827509924387650774
 GameObject:
   m_ObjectHideFlags: 0

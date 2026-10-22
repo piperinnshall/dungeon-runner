@@ -26,21 +26,36 @@ public class Door : MonoBehaviour
     [SerializeField] private float openDuration = 0.8f;
     [SerializeField] private KeyCode interactKey = KeyCode.F;
 
+    public enum LockType { None, Gold, Silver }
+
     [Header("Locks (optional)")]
-    [Tooltip("LOCK 1: item name the player must have in their Inventory. Leave EMPTY (and Extra Locks empty) for a door with no lock.")]
-    [SerializeField] private string requiredKey = "";
+    [Tooltip("LOCK 1: None = no lock. Gold / Silver = any key of that type opens it (and is used up).")]
+    [SerializeField] private LockType lockType = LockType.None;
     [Tooltip("LOCK 1's model. It is hidden when this lock is opened. Optional.")]
     [SerializeField] private GameObject lockObject;
-    [Tooltip("Need more than one key? Add extra locks here, each with its own key name and lock model. Leave empty for a single-lock door.")]
+    [Tooltip("Need more than one key? Add extra locks here, each with its own key type and lock model. Leave empty for a single-lock door.")]
     [SerializeField] private List<ExtraLock> extraLocks = new List<ExtraLock>();
     [SerializeField] private string lockedMessage = "It's locked.";
     [Tooltip("For double gates: the OTHER leaf. Once this door is fully unlocked, that one is unlocked too. Set it on both leaves.")]
     [SerializeField] private Door linkedDoor;
 
+    [Header("Sounds (optional)")]
+    [Tooltip("Plays as the door starts opening. For a gate, put the gate sound here.")]
+    [SerializeField] private AudioClip openSound;
+    [Tooltip("Plays when the door finishes closing. For a gate, put the gate sound here too.")]
+    [SerializeField] private AudioClip closeSound;
+    [Tooltip("Plays when a key opens a lock on this door.")]
+    [SerializeField] private AudioClip unlockSound;
+    [Range(0f, 1f)] [SerializeField] private float soundVolume = 1f;
+    [Tooltip("Seconds between unlocking and the door starting to open, so the unlock sound is heard first.")]
+    [SerializeField] private float openDelayAfterUnlock = 0.4f;
+
+    private AudioSource audioSource;
+
     [System.Serializable]
     public class ExtraLock
     {
-        public string requiredKey;
+        public KeyType keyType = KeyType.Gold;
         public GameObject lockObject;
     }
 
@@ -50,6 +65,15 @@ public class Door : MonoBehaviour
         public string key;
         public GameObject model;
         public bool open;
+        public string worldId; // remembers this lock is open between scene transitions
+    }
+
+    // Opens a lock: hides its model and remembers it in WorldState.
+    private static void OpenSlot(LockSlot slot)
+    {
+        slot.open = true;
+        if (slot.model != null) slot.model.SetActive(false);
+        WorldState.Set(slot.worldId);
     }
     private readonly List<LockSlot> locks = new List<LockSlot>();
 
@@ -77,42 +101,73 @@ public class Door : MonoBehaviour
         // Remember the closed pose so Close() returns to exactly this rotation.
         closedRotation = doorPivot.rotation;
 
-        // Build the list of locks. Lock 1 is the Required Key field, the rest come from Extra Locks.
-        // A lock with an empty key name is ignored, so no keys at all = a normal unlocked door.
-        AddLock(requiredKey, lockObject);
+        // Build the list of locks. Lock 1 is the Lock Type field (None = skipped), the rest come from
+        // Extra Locks. No locks at all = a normal unlocked door.
+        if (lockType == LockType.Gold) AddLock(KeyType.Gold, lockObject);
+        else if (lockType == LockType.Silver) AddLock(KeyType.Silver, lockObject);
+        else if (lockObject != null) lockObject.SetActive(false); // no lock, so don't show a lock model
+
         foreach (ExtraLock extra in extraLocks)
-            AddLock(extra.requiredKey, extra.lockObject);
+            AddLock(extra.keyType, extra.lockObject);
+
+        // 3D sound coming from the door.
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 1f;
+        audioSource.minDistance = 2f;
+        audioSource.maxDistance = 25f;
     }
 
-    private void AddLock(string key, GameObject model)
+    private void PlaySound(AudioClip clip)
     {
-        if (string.IsNullOrEmpty(key)) return;
-
-        locks.Add(new LockSlot { key = key, model = model, open = false });
-        if (model != null) model.SetActive(true);
+        if (clip != null && audioSource != null) audioSource.PlayOneShot(clip, soundVolume);
     }
 
-    // Tries every lock that is still closed against the player's Inventory. Each lock whose key
-    // the player holds opens and its model disappears. Returns true only when ALL locks are open.
+    private void AddLock(KeyType type, GameObject model)
+    {
+        string id = "lock:" + WorldState.IdOf(gameObject) + "#" + locks.Count;
+        LockSlot slot = new LockSlot { key = KeyPickup.ItemName(type), model = model, open = false, worldId = id };
+        locks.Add(slot);
+
+        // Already unlocked earlier (the player came back to this level)? Keep it open.
+        if (WorldState.Has(id))
+        {
+            slot.open = true;
+            if (model != null) model.SetActive(false);
+        }
+        else if (model != null)
+        {
+            model.SetActive(true);
+        }
+    }
+
+    // Tries every lock that is still closed against the player's Inventory. For each lock, if the
+    // player carries a key of that type, the lock opens, its model disappears and ONE key of that
+    // type is removed. Returns true only when ALL locks are open.
     private bool TryUnlock(Transform user)
     {
         Inventory inventory = user != null ? user.GetComponentInParent<Inventory>() : null;
 
         List<string> missingKeys = new List<string>();
+        bool openedALock = false;
         foreach (LockSlot slot in locks)
         {
             if (slot.open) continue;
 
             if (inventory != null && inventory.HasItem(slot.key))
             {
-                slot.open = true;
-                if (slot.model != null) slot.model.SetActive(false);
+                OpenSlot(slot);
+                inventory.RemoveItem(slot.key); // the key is used up, so it can't open another lock
+                openedALock = true;
             }
             else
             {
                 missingKeys.Add(slot.key);
             }
         }
+
+        // One unlock sound per press, even if several locks opened at once.
+        if (openedALock) PlaySound(unlockSound);
 
         if (missingKeys.Count == 0)
         {
@@ -130,10 +185,7 @@ public class Door : MonoBehaviour
         if (!IsLocked) return; // also stops the two linked leaves calling each other forever
 
         foreach (LockSlot slot in locks)
-        {
-            slot.open = true;
-            if (slot.model != null) slot.model.SetActive(false);
-        }
+            OpenSlot(slot);
 
         if (linkedDoor != null) linkedDoor.Unlock();
     }
@@ -159,10 +211,25 @@ public class Door : MonoBehaviour
         if (isMoving) return;
 
         // Locked doors only open once the player has every key (locks open one by one as keys are found).
-        if (IsLocked && !TryUnlock(user)) return;
+        if (IsLocked)
+        {
+            if (!TryUnlock(user)) return;
+
+            // Just unlocked: let the unlock sound play, then swing open.
+            StartCoroutine(OpenAfterUnlock(user));
+            return;
+        }
 
         if (isOpen) Close();
         else Open(user);
+    }
+
+    private IEnumerator OpenAfterUnlock(Transform user)
+    {
+        isMoving = true; // ignore presses during the short pause
+        yield return new WaitForSeconds(openDelayAfterUnlock);
+        isMoving = false;
+        Open(user);
     }
 
     public void Open(Transform opener)
@@ -216,6 +283,8 @@ public class Door : MonoBehaviour
         isMoving = true;
         Quaternion startRotation = doorPivot.rotation;
 
+        if (opening) PlaySound(openSound);
+
         float elapsed = 0f;
         while (elapsed < openDuration)
         {
@@ -228,6 +297,8 @@ public class Door : MonoBehaviour
         doorPivot.rotation = target; // snap exactly to the final angle
         isOpen = opening;
         isMoving = false;
+
+        if (!opening) PlaySound(closeSound); // the "thud" as it shuts
     }
 
     private void OnTriggerEnter(Collider other)

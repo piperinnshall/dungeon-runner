@@ -9,14 +9,36 @@ public record TreasureManagerState(
 );
 
 public class TreasureManager {
+  // One shared manager for the whole game. It is static, so the player's coins and which chests
+  // have been opened survive scene transitions, and it exists even when you press Play directly
+  // inside a level.
+  public static TreasureManager Shared { get; } = new();
+
+  // Fired whenever the player's coin total changes (chest opened, coins redistributed on death).
+  // UI such as CoinCounter listens to this.
+  public event Action<int> CoinsChanged;
+
   private readonly List<ICoinPacket> _packets = new();
   private List<ITreasure> _treasures = new();
 
   public TreasureManagerState State =>
     new(_packets.ToList(), _treasures.Select(t => t.State).ToList());
 
-  public void Initialize(IReadOnlyList<ITreasure> treasures) => 
+  public void Initialize(IReadOnlyList<ITreasure> treasures) =>
     _treasures = treasures.ToList();
+
+  // Used by TreasureView: returns the treasure with this id if it already exists (e.g. the player
+  // came back to a level), otherwise registers the new one. This is what keeps opened chests opened.
+  public ITreasure Register(ITreasure treasure) {
+    var existing = Find(treasure.State.Id);
+    if (existing != null) return existing;
+
+    _treasures.Add(treasure);
+    treasure.Initialize(this);
+    return treasure;
+  }
+
+  public ITreasure Find(string id) => _treasures.FirstOrDefault(t => t.State.Id == id);
 
   public int GetTotalCoins() => _packets.Sum(p => p.Amount);
 
@@ -24,6 +46,29 @@ public class TreasureManager {
     _packets.AddRange(packets);
     Debug.Log($"Opened Treasure");
     Debug.Log($"Player has: {GetTotalCoins()} Coins");
+    CoinsChanged?.Invoke(GetTotalCoins());
+  }
+
+  // Used by the merchant. Takes 'amount' coins from the player; returns false (and takes nothing) if they
+  // can't afford it. Whatever is left over is kept as one packet.
+  public bool TrySpend(int amount) {
+    if (amount <= 0) return true;
+    int total = GetTotalCoins();
+    if (total < amount) return false;
+
+    int remaining = total - amount;
+    _packets.Clear();
+    if (remaining > 0) _packets.Add(new ICoinPacket.Cheap(remaining));
+    CoinsChanged?.Invoke(GetTotalCoins());
+    return true;
+  }
+
+  // Used on respawn: every treasure closes again with the coins it started with, and the player's
+  // coins are cleared (all the treasure goes "back to where it came from").
+  public void ResetAllTreasure() {
+    _packets.Clear();
+    foreach (var t in _treasures) t.ResetToOriginal();
+    CoinsChanged?.Invoke(GetTotalCoins());
   }
 
   public void Redistribute() {
@@ -31,6 +76,7 @@ public class TreasureManager {
     if (!closed.Any()) return;
     foreach (var (p, i) in _packets.Enumerate()) closed[i % closed.Count()].Add(p);
     _packets.Clear();
+    CoinsChanged?.Invoke(GetTotalCoins());
   }
 }
 
@@ -50,4 +96,3 @@ public interface ICoinPacket {
     };
   }
 }
-

@@ -6,6 +6,8 @@ public class Torch : MonoBehaviour
     bool interact;
     GameObject torchFlame;
     Light torchLight;
+    // Optional fire audio (FireSound component on this torch)
+    FireSound fireSound;
 
     InteractableObject interactableObject;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -13,6 +15,7 @@ public class Torch : MonoBehaviour
     {
         torchFlame = transform.Find("Torch Glow Particle effect").gameObject;
         torchLight = torchFlame.GetComponentInChildren<Light>();
+        fireSound = GetComponent<FireSound>();
         interactableObject = GetComponent<InteractableObject>();
         ExtinguishTorch();
 
@@ -47,6 +50,12 @@ public class Torch : MonoBehaviour
         }
         else
         {
+            // Torches can only be lit once the lantern has been bought from the merchant
+            if (!PlayerItems.HasLantern)
+            {
+                Debug.Log("You need a lantern to light this.");
+                return;
+            }
             LightTorch();
         }
     }
@@ -57,6 +66,7 @@ public class Torch : MonoBehaviour
         ParticleSystem flame = torchFlame.GetComponent<ParticleSystem>();
         flame.Play();
         if (torchLight != null) torchLight.enabled = true;
+        if (fireSound != null) fireSound.Ignite();
     }
 
     void ExtinguishTorch()
@@ -65,5 +75,6 @@ public class Torch : MonoBehaviour
         ParticleSystem flame = torchFlame.GetComponent<ParticleSystem>();
         flame.Stop();
         if (torchLight != null) torchLight.enabled = false;
+        if (fireSound != null) fireSound.Extinguish();
     }
 }

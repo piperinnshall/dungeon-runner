@@ -1,7 +1,7 @@
-using NUnit.Framework.Interfaces;
+// (Removed unused "using NUnit.Framework.Interfaces;" and "using System.Reflection.Metadata.Ecma335;":
+//  those are editor-only and can make a game BUILD fail.)
 using System;
 using System.ComponentModel;
-using System.Reflection.Metadata.Ecma335;
 using Unity.AI.Navigation.LowLevel;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -30,13 +30,20 @@ public class Movement : MonoBehaviour
     // The vertical velocity of the player, used for jumping and falling
     float verticalVelocity = 0f;
 
-    float gravity = 2.7f;
+    // Jump / gravity settings are now shown in the Inspector so they can be tuned (old values: 2.5, 2.5, 0.7).
+    [Header("Jump & Gravity")]
+    [Tooltip("How fast the player speeds up when falling. Higher = heavier, less floaty. (Real-world feel is around 10-20.)")]
+    [SerializeField] float gravity = 15f;
     // The force applied to the player when jumping, the higher the value, the higher the player will jump
-    float jumpForce = 2f;
+    [Tooltip("Upward speed at the start of a jump. Higher = jumps higher.")]
+    [SerializeField] float jumpForce = 4f;
     // The time elapsed since the player started jumping, used to determine when to start falling
     float jumpElapsedTime = 0;
     // Max time the player can stay in the air while jumping, after this time the player will start falling
-    float jumpTime = 0.5f;
+    [Tooltip("Seconds the player rises for before starting to fall. Lower = snappier, shorter jump.")]
+    [SerializeField] float jumpTime = 0.35f;
+    [Tooltip("Fastest the player can fall, so long drops don't get out of hand.")]
+    [SerializeField] float maxFallSpeed = 25f;
 
     public bool canMove = true;
 
@@ -62,6 +69,10 @@ public class Movement : MonoBehaviour
     private GameObject currentBomb;
 
     private Equipment equipmentScript;
+    // Optional combat sounds (PlayerSounds component on the player)
+    private PlayerSounds playerSounds;
+    // Seconds after the attack starts that the hit is checked (and the swing/land sounds play). Was 0.4.
+    [SerializeField] float attackHitDelay = 0.2f;
     [SerializeField] BoomerangProjectile boomerang;
     // Has the player thrown the boomerang? Used to prevent multiple throws
     public bool thrownBoomerang = false;
@@ -70,7 +81,29 @@ public class Movement : MonoBehaviour
     public Transform attackPoint;
     CharacterController cc;
 
+    // Is the player on the ground this frame? Set at the start of Update by CheckGrounded().
+    // (Replaces the raw cc.isGrounded, which can miss the ground and leave the player stuck in "not grounded".)
+    bool grounded;
+    // How far below the feet still counts as "on the ground" for the backup check.
+    [SerializeField] float groundCheckDistance = 0.2f;
+
     public PlayerState currentState = new Idle();
+
+    // cc.isGrounded, plus a backup sphere check just below the capsule's feet.
+    bool CheckGrounded()
+    {
+        if (cc.isGrounded) return true;
+
+        Vector3 scale = transform.lossyScale;
+        float radius = cc.radius * Mathf.Max(scale.x, scale.z) * 0.9f;
+        float halfHeight = Mathf.Max(cc.height * 0.5f * scale.y, radius);
+        Vector3 capsuleCenter = transform.TransformPoint(cc.center);
+        Vector3 bottomSphere = capsuleCenter + Vector3.down * (halfHeight - radius);
+
+        // Start slightly up inside the capsule and cast down a short way. Triggers are ignored.
+        return Physics.SphereCast(bottomSphere + Vector3.up * 0.05f, radius, Vector3.down, out _,
+                                  cc.skinWidth + groundCheckDistance + 0.05f, ~0, QueryTriggerInteraction.Ignore);
+    }
 
     public PlayerState HandleIdle()
     {
@@ -78,6 +111,8 @@ public class Movement : MonoBehaviour
         canMove = true;
         // Transition to other states based on input
         if (cc.isGrounded && inputJump)
+        //Debug.Log("Player is idle");
+        if (grounded && inputJump)
         {
             return new Jumping();
         }
@@ -85,24 +120,24 @@ public class Movement : MonoBehaviour
         {
             return new Moving();
         }
-        else if (!cc.isGrounded)
+        else if (!grounded)
         {
             return new Falling();
         }
-        else if (cc.isGrounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime && !equipmentScript.hasBoomerang)
+        else if (grounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime && !equipmentScript.hasBoomerang)
         {
             attackStartTime = Time.time;
             hasAttacked = false;
             return new Attacking();
-        } else if (cc.isGrounded && Input.GetMouseButtonDown(0) && equipmentScript.hasBoomerang && thrownBoomerang == false)
+        } else if (grounded && Input.GetMouseButtonDown(0) && equipmentScript.hasBoomerang && thrownBoomerang == false && PlayerItems.HasBoomerang)
         {
             return new Throwing();
         }
-        else if (cc.isGrounded && Input.GetMouseButton(1) && !equipmentScript.hasBoomerang && equipmentScript.hasSwordAndShield)
+        else if (grounded && Input.GetMouseButton(1) && !equipmentScript.hasBoomerang && equipmentScript.hasSwordAndShield)
         {
             return new Blocking();
         }
-        else if (cc.isGrounded && Input.GetMouseButton(1) && equipmentScript.hasBoomerang)
+        else if (grounded && Input.GetMouseButton(1) && equipmentScript.hasBoomerang && PlayerItems.HasBoomerang)
         {
             return new Aiming();
         }
@@ -112,7 +147,8 @@ public class Movement : MonoBehaviour
     public PlayerState HandleFall()
     {
         canMove = true;
-        if (cc.isGrounded)
+        //Debug.Log("Player is falling");
+        if (grounded)
         {
             verticalVelocity = 0f;
             return new Idle();
@@ -124,7 +160,8 @@ public class Movement : MonoBehaviour
     {
         canMove = true;
 
-        if (!cc.isGrounded)
+
+        if (!grounded)
         {
             return new Falling();
         } else if (inputJump)
@@ -134,13 +171,13 @@ public class Movement : MonoBehaviour
         {
             return new Idle();
         }
-        else if (cc.isGrounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime && equipmentScript.hasSwordAndShield)
+        else if (grounded && Input.GetMouseButtonDown(0) && Time.time >= nextAttackTime && equipmentScript.hasSwordAndShield)
         {
             attackStartTime = Time.time;
             hasAttacked = false;
             return new Attacking();
         }
-        else if (cc.isGrounded && Input.GetMouseButton(1) && equipmentScript.hasSwordAndShield)
+        else if (grounded && Input.GetMouseButton(1) && equipmentScript.hasSwordAndShield)
         {
             return new Blocking();
         }
@@ -169,8 +206,11 @@ public class Movement : MonoBehaviour
         if (!hasAttacked)
         {
             canMove = false;
-            Invoke(nameof(Attack), 0.4f);
+            Invoke(nameof(Attack), attackHitDelay);
             hasAttacked = true;
+            if (playerSounds != null) playerSounds.PlayAttack(); // attack shout
+            //Debug.Log("Player is attacking");
+            // Play attack animation
             nextAttackTime = Time.time + attackCoolldown;
         }
 
@@ -226,6 +266,7 @@ public class Movement : MonoBehaviour
         cc = GetComponent<CharacterController>();
         _animator = GetComponent<Animator>();
         equipmentScript = GetComponent<Equipment>();
+        playerSounds = GetComponent<PlayerSounds>();
     }
 
     // Update is called once per frame
@@ -235,6 +276,8 @@ public class Movement : MonoBehaviour
         inputHorizontal = Input.GetAxis("Horizontal");
         inputVertical = Input.GetAxis("Vertical");
         inputJump = Input.GetAxis("Jump") == 1f;
+
+        grounded = CheckGrounded();
 
         // State machine
         currentState = currentState switch
@@ -250,14 +293,14 @@ public class Movement : MonoBehaviour
             _ => currentState
         };
 
-        // Bomb controls
-        if(Input.GetKeyDown(KeyCode.G) && bomb != null)
+        // Bomb controls (PlayerItems.TryUseBomb uses up one bomb; false = locked or none left)
+        if(Input.GetKeyDown(KeyCode.G) && bomb != null && PlayerItems.TryUseBomb())
         {
             currentBomb = Instantiate(bomb.gameObject, transform.position + transform.forward * 1.5f, Quaternion.identity);
             currentBomb.GetComponent<Bomb>().Ignite();
         }
 
-        bool isGrounded = cc.isGrounded;
+        bool isGrounded = grounded;
         _animator.SetBool("IsGrounded", isGrounded);
 
         // Get movement direction and then move the character controller 
@@ -267,8 +310,13 @@ public class Movement : MonoBehaviour
             cc.Move(movement);
         }
 
-        // Calculate forward direction value for animation
-        float forwardValue = Vector3.Dot(transform.forward, movement.normalized);
+        // Calculate forward direction value for animation.
+        // Uses the HORIZONTAL movement only: with the vertical part included, any gravity build-up made
+        // Forward drop towards 0 and the walk blend tree played idle while the player was moving.
+        Vector3 horizontalMovement = new Vector3(movement.x, 0f, movement.z);
+        float forwardValue = horizontalMovement.sqrMagnitude > 1e-8f
+            ? Vector3.Dot(transform.forward, horizontalMovement.normalized)
+            : 0f;
         _animator.SetFloat("Forward", forwardValue);
 
         // Calculate upward direction value for animation
@@ -307,12 +355,16 @@ public class Movement : MonoBehaviour
 
         if (currentState is Jumping)
         {
-            directionY = Mathf.SmoothStep(jumpForce, jumpForce * 0.30f, jumpElapsedTime / jumpTime) * Time.deltaTime;
+            float upwardSpeed = Mathf.SmoothStep(jumpForce, jumpForce * 0.30f, jumpElapsedTime / jumpTime);
+            directionY = upwardSpeed * Time.deltaTime;
+            // Carry the remaining upward speed into the fall, so gravity curves the jump into a smooth arc
+            // instead of the player suddenly dropping at the top.
+            verticalVelocity = upwardSpeed;
         }
         else
         {
             // Apply gravity when not jumping
-            if (cc.isGrounded)
+            if (grounded)
             {
                 // Ensures player remains grounded when on ground and not falling
                 verticalVelocity = -2f;
@@ -320,6 +372,7 @@ public class Movement : MonoBehaviour
             else
             {
                 verticalVelocity -= gravity * Time.deltaTime;
+                verticalVelocity = Mathf.Max(verticalVelocity, -maxFallSpeed);
             }
             directionY = verticalVelocity * Time.deltaTime;
         }
@@ -332,18 +385,27 @@ public class Movement : MonoBehaviour
 
     void Attack()
     {
+        // Sword swing sound, at the same moment as the hit check (and the land sound below)
+        if (playerSounds != null) playerSounds.PlaySwing();
+
         // Detect enemies in range of attack
         Collider[] hitEnemies = Physics.OverlapSphere(attackPoint.position, attackRange);
 
         // For each enemy hit, apply damage
+        bool hitSomething = false;
         foreach (Collider enemy in hitEnemies)
         {
             EnemyHealth enemyHealth = enemy.GetComponentInParent<EnemyHealth>();
             if (enemyHealth != null)
             {
-                enemyHealth.TakeDamage(damage, transform.position, gameObject);
+                enemyHealth.TakeDamage(damage, transform.position);
+                hitSomething = true;
+                //Debug.Log("Enemy Health: " + enemyHealth.health);
             }
         }
+
+        // Attack land sound, once per swing, only if an enemy was hit
+        if (hitSomething && playerSounds != null) playerSounds.PlayHit();
     }
 
     void StartBlocking()

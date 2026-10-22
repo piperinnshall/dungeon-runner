@@ -14,6 +14,17 @@ public class SlidingDoor : MonoBehaviour
     [SerializeField] private Vector3 slideOffset = new Vector3(-2f, 0f, 0f);
     [SerializeField] private float slideDuration = 2f;
 
+    [Header("Sound (optional)")]
+    [Tooltip("Plays when the door starts sliding open, e.g. the gate sound.")]
+    [SerializeField] private AudioClip openSound;
+    [Range(0f, 1f)] [SerializeField] private float soundVolume = 1f;
+
+    [Header("Release enemies (optional)")]
+    [Tooltip("NavMesh Agents of enemies locked behind this door. Untick their NavMesh Agent component in the Inspector so they stay put; they are switched on when the door opens.")]
+    [SerializeField] private UnityEngine.AI.NavMeshAgent[] releaseOnOpen;
+    [Tooltip("Seconds after the door starts opening before the enemies can move.")]
+    [SerializeField] private float releaseDelay = 1f;
+
     private readonly HashSet<Altar> altars = new HashSet<Altar>();
     private readonly HashSet<Altar> litAltars = new HashSet<Altar>();
     private bool isOpen;
@@ -24,21 +35,56 @@ public class SlidingDoor : MonoBehaviour
         altars.Add(altar);
     }
 
-    /// <summary>Called by an Altar when it gets lit. Opens the door once all registered altars are lit.</summary>
-    public void AltarLit(Altar altar)
+    /// <summary>
+    /// Called by an Altar when it gets lit. Opens the door once all registered altars are lit.
+    /// instant = true when restoring a level the player has been to before: no slide, no sound.
+    /// </summary>
+    public void AltarLit(Altar altar, bool instant = false)
     {
         litAltars.Add(altar);
-        Debug.Log("Altars lit: " + litAltars.Count + " / " + altars.Count);
+        if (!instant) Debug.Log("Altars lit: " + litAltars.Count + " / " + altars.Count);
 
         if (!isOpen && litAltars.Count >= altars.Count)
-            Open();
+        {
+            if (instant) OpenInstantly();
+            else Open();
+        }
+    }
+
+    // Already-open state when coming back to a level: jump straight to the open position.
+    private void OpenInstantly()
+    {
+        isOpen = true;
+        transform.position += slideOffset;
+
+        if (releaseOnOpen != null)
+            foreach (UnityEngine.AI.NavMeshAgent agent in releaseOnOpen)
+                if (agent != null) agent.enabled = true;
     }
 
     public void Open()
     {
         if (isOpen) return;
         isOpen = true;
+
+        if (openSound != null)
+        {
+            AudioSource source = gameObject.AddComponent<AudioSource>();
+            source.spatialBlend = 1f; // 3D: comes from the door
+            source.minDistance = 2f;
+            source.maxDistance = 25f;
+            source.PlayOneShot(openSound, soundVolume);
+        }
+
         StartCoroutine(Slide());
+        if (releaseOnOpen != null && releaseOnOpen.Length > 0) StartCoroutine(ReleaseEnemies());
+    }
+
+    private IEnumerator ReleaseEnemies()
+    {
+        yield return new WaitForSeconds(releaseDelay);
+        foreach (UnityEngine.AI.NavMeshAgent agent in releaseOnOpen)
+            if (agent != null) agent.enabled = true; // snaps onto the NavMesh and starts patrolling / chasing
     }
 
     private IEnumerator Slide()

@@ -85,11 +85,16 @@ MonoBehaviour:
   openAngle: 90
   openDuration: 0.8
   interactKey: 101
-  requiredKey: 
+  lockType: 0
   lockObject: {fileID: 0}
   extraLocks: []
   lockedMessage: It's locked.
   linkedDoor: {fileID: 0}
+  openSound: {fileID: 0}
+  closeSound: {fileID: 0}
+  unlockSound: {fileID: 0}
+  soundVolume: 1
+  openDelayAfterUnlock: 0.4
 --- !u!54 &7013102712257688545
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -189,11 +194,16 @@ MonoBehaviour:
   openAngle: 90
   openDuration: 0.8
   interactKey: 101
-  requiredKey: 
+  lockType: 0
   lockObject: {fileID: 0}
   extraLocks: []
   lockedMessage: It's locked.
   linkedDoor: {fileID: 0}
+  openSound: {fileID: 8300000, guid: dcb0076f2b117c94fbdf9821c2d91a59, type: 3}
+  closeSound: {fileID: 8300000, guid: dcb0076f2b117c94fbdf9821c2d91a59, type: 3}
+  unlockSound: {fileID: 8300000, guid: f3f544b7bb4043a4cb5ec4b912ce4ee9, type: 3}
+  soundVolume: 1
+  openDelayAfterUnlock: 0.4
 --- !u!54 &6306601283795141435
 Rigidbody:
   m_ObjectHideFlags: 0

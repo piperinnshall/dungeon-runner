@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class World {
   public GameManager Game { get; private set; } = new();
-  public TreasureManager Treasure { get; private set; } = new();
+
+  // Points at the one shared manager, so everything (chests, UI, death redistribution) uses the same coins.
+  public TreasureManager Treasure => TreasureManager.Shared;
 
   public void Start() {
-    Game.Transition(new IState.Loading(() => { Test.TreasureView(Treasure); }));
+    // Chests now register themselves (see TreasureView.Start), so the test setup is no longer called.
+    Game.Transition(new IState.Loading(() => { }));
   }
 }
 
+// Old test setup: only supported a single chest with id "chest_test". Kept for reference, not used.
 class Test {
   public static void TreasureView(TreasureManager tm) {
 
@@ -26,7 +30,7 @@ class Test {
     tm.Initialize(treasures);
     treasures.ForEach(t => t.Initialize(tm));
 
-    Debug.Log($"Player has: {tm.GetTotalCoins()} Coins");  
+    Debug.Log($"Player has: {tm.GetTotalCoins()} Coins");
   }
 }
 
@@ -43,7 +47,7 @@ class Test {
       t.Initialize(tm);
       Debug.Log($"Treasure: {string.Join(", ", t.State.Packets)}");
     });
-    Debug.Log($"Player has: {tm.GetTotalCoins()} Coins");  
+    Debug.Log($"Player has: {tm.GetTotalCoins()} Coins");
     treasures[0].Open();
     treasures[1].Open();
     Debug.Log($"Open Treasure0");
@@ -55,5 +59,3 @@ class Test {
     treasures.ForEach(t => Debug.Log($"Treasure: {string.Join(", ", t.State.Packets)} (IsOpened: {t.State.IsOpened})"));
   }
   */
-
-

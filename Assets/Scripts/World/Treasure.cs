@@ -14,12 +14,15 @@ public interface ITreasure {
   void Initialize(TreasureManager manager);
   void Add(ICoinPacket packet);
   void Open();
+  // Closes the treasure again and puts back exactly the coins it started with (used on respawn).
+  void ResetToOriginal();
 }
 
 public class Treasure<T> : ITreasure where T : ICoinPacket {
   private string _id;
   private bool _isOpened;
   private readonly List<ICoinPacket> _packets = new();
+  private readonly List<ICoinPacket> _originalPackets = new();
   private TreasureManager _manager;
 
   public TreasureState State => new(_id, _isOpened, _packets.AsReadOnly());
@@ -27,6 +30,13 @@ public class Treasure<T> : ITreasure where T : ICoinPacket {
   public Treasure(string id) {
     _id = id;
     _packets.Add(ICoinPacket.Create<T>());
+    _originalPackets.AddRange(_packets);
+  }
+
+  public void ResetToOriginal() {
+    _isOpened = false;
+    _packets.Clear();
+    _packets.AddRange(_originalPackets);
   }
 
   public void Initialize(TreasureManager manager) => _manager = manager;

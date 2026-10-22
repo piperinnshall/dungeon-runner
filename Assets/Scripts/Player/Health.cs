@@ -1,5 +1,5 @@
 using System;
-using UnityEditor;
+// (Removed unused "using UnityEditor;": it's editor-only and makes a game BUILD fail.)
 using UnityEngine;
 
 public class Health : MonoBehaviour
@@ -13,12 +13,26 @@ public class Health : MonoBehaviour
 
     public Animator _animator;
 
+    // Optional combat sounds (PlayerSounds component on the player)
+    PlayerSounds playerSounds;
+
+    // Fired when the player dies (the DeathScreen listens to this)
+    public static event Action PlayerDied;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        // Max health comes from the shop's heart upgrades (3 hearts + 2 per upgrade), so it carries between levels.
+        maxHealth = PlayerItems.MaxHealth;
         health = maxHealth;
         _animator = GetComponent<Animator>();
-        combatScript = GetComponent<Combat>();
+        playerSounds = GetComponent<PlayerSounds>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
     }
 
     public void TakeDamage(int amount, Vector3 attackerPosition, GameObject attacker)
@@ -36,15 +50,8 @@ public class Health : MonoBehaviour
             if (dotProduct > 0.5f) // > 0.5 means within roughly a 120-degree front cone
             {
                 Debug.Log("Attack blocked completely!");
-
-                EnemyStagger enemy = attacker.GetComponentInParent<EnemyStagger>();
-
-                if (enemy != null && combatScript != null && Time.time - combatScript.blockStartTime <= 1.5f)
-                {
-                    enemy.Stagger();
-                    Debug.Log("Perfect block! Enemy staggered!");
-                }
-
+                // Play a shield impact particle or sound effect here
+                if (playerSounds != null) playerSounds.PlayBlock();
                 return;
             }
         }
@@ -52,6 +59,7 @@ public class Health : MonoBehaviour
         moveScript.canMove = false;
         // Apply Damage
         health -= amount;
+        if (playerSounds != null) playerSounds.PlayHurt(); // random hurt shout
         Invoke(nameof(CanMoveAgain), 0.05f);
         _animator.SetTrigger("HitTrigger");
         if (health <= 0)
@@ -73,6 +81,7 @@ public class Health : MonoBehaviour
         // Play death anaimation
         // Disable movement
         // Go to death menu/reset level
+        PlayerDied?.Invoke();
         gameObject.SetActive(false);
     }
 }
