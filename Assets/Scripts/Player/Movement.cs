@@ -398,7 +398,7 @@ public class Movement : MonoBehaviour
             EnemyHealth enemyHealth = enemy.GetComponentInParent<EnemyHealth>();
             if (enemyHealth != null)
             {
-                enemyHealth.TakeDamage(damage, transform.position);
+                enemyHealth.TakeDamage(damage, transform.position, gameObject);
                 hitSomething = true;
                 //Debug.Log("Enemy Health: " + enemyHealth.health);
             }

@@ -126,12 +126,12 @@ public class Bomb : MonoBehaviour
             // Damage the player
             Health playerHealth = hit.GetComponentInParent<Health>();
             if (playerHealth != null && damaged.Add(playerHealth))
-                playerHealth.TakeDamage(explosionDamage, transform.position);
+                playerHealth.TakeDamage(explosionDamage, transform.position, gameObject);
 
             // Damage enemies (goblins, skeletons, anything with an EnemyHealth script)
             EnemyHealth enemyHealth = hit.GetComponentInParent<EnemyHealth>();
             if (enemyHealth != null && damaged.Add(enemyHealth))
-                enemyHealth.TakeDamage(explosionDamage, transform.position);
+                enemyHealth.TakeDamage(explosionDamage, transform.position, gameObject);
 
             if (hit.CompareTag(explodableTag))
             {
