@@ -24,3 +24,5 @@ I learnt that passion does not mean dedication, it doesn't matter how much you w
 I definitely slacked off when it came to time management towards the end of the project (including this report) when it came time to implement the parry system and got a bit overwhelmed with my other courses and didn't keep up with my sprints.
 What's more is you don't know what you don't know which was made abundantly clear when trying to make a game originally I thought I was going to have to learn different ray tracing techniques but instead had to learn how to use unity's tag and navmesh system system to make sure terrain was walking and also got to learn proper   
 I also learnt that even in group projects people are still people you can talk to them and tell them you'll have something done and simply not do it, in my case I wasn't able to get the toon-shader completed in time so Riku found one online to implement
+
+I also learnt a lot of proper (not messy) git usage by being forced to make regular changes and by the end of it was pull and push comfortably and not using "git clone" every time I needed to get the latest version
