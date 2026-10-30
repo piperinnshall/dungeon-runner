@@ -1,6 +1,7 @@
 ### Kylen Crocombe Contributions
 ## Student ID: 300666024
 
+### Milestone 3:
 | Claim | Contribution | Notes |
 | --- | --- | --- |
 | 1 | Movement.cs — Most | I created this script, Piper gave me the idea of using a state machine for the player states |
@@ -17,4 +18,3 @@
 | 12 | Torch.cs — Most | I created this script |
 | 13 | InteractableObject.cs — All | I created this script |
 | 14 | Player animations — Most | Using Unity’s animation system, I animated the player using various animations Riku had found on the asset store. |
-
